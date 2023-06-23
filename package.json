@@ -12,10 +12,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "echarts": "^4.2.0-rc.2",
-    "element-ui": "^2.3.7",
+    "element-ui": "^2.15.13",
     "js-cookie": "^2.2.0",
     "normalize.css": "^8.0.0",
     "nprogress": "^0.2.0",
+    "prettier": "^2.8.8",
+    "uqrcodejs": "^4.0.7",
     "v-charts": "^1.19.0",
     "v-distpicker": "^1.0.20",
     "vue": "^2.5.2",

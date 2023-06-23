@@ -358,6 +358,57 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path:'/mmb',
+    component: Layout,
+    redirect: '/mmb/member',
+    name: 'mmb',
+    meta: {title: '会员', icon: 'mmb'},
+    children: [
+      {
+        path: 'member',
+        name: 'member',
+        component: () => import('@/views/mmb/member/index'),
+        meta: {title: '会员列表', icon: 'ums-admin'}
+      },
+      {
+        path: 'memberlevel',
+        name: 'memberlevel',
+        component: () => import('@/views/mmb/memberlevel/index'),
+        meta: {title: '会员等级列表', icon: 'ums-admin'}
+      },
+      {
+        path: 'lovevaluebuy',
+        name: 'lovevaluebuy',
+        component: () => import('@/views/mmb/lovevaluebuy/index'),
+        meta: {title: '爱心值购买', icon: 'ums-admin'}
+      },
+      {
+        path: 'lovevaluemove',
+        name: 'lovevaluemove',
+        component: () => import('@/views/mmb/lovevaluemove/index'),
+        meta: {title: '爱心值传递', icon: 'ums-admin'}
+      },
+      {
+        path: 'contributemove',
+        name: 'contributemove',
+        component: () => import('@/views/mmb/contributemove/index'),
+        meta: {title: '贡献值传递', icon: 'ums-admin'}
+      },
+      {
+        path: 'recharge',
+        name: 'recharge',
+        component: () => import('@/views/mmb/recharge/index'),
+        meta: {title: '提现列表', icon: 'ums-admin'}
+      },
+      {
+        path: 'purchase',
+        name: 'purchase',
+        component: () => import('@/views/mmb/purchase/index'),
+        meta: {title: '捐赠列表', icon: 'ums-admin'}
+      },
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ]
 
