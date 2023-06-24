@@ -13,293 +13,110 @@
       </div>
       <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input size="mini" v-model="listQuery.keyword" class="input-width" placeholder="帐号/姓名"
-              clearable></el-input>
+          <el-form-item label="会员用户名：">
+            <el-input size="mini" v-model="listQuery.name" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
-          <el-form-item label="申请日期：">
-            <el-date-picker size="mini" v-model="listQuery.applyTime" type="daterange" range-separator="至"
+          <el-form-item label="创建日期：">
+            <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
-          </el-form-item>
-          <el-form-item label="申请数量：">
-            <el-input-number size="mini" v-model="listQuery.moneyStart" placeholder="开始数量"
-              controls-position="right"></el-input-number> 至
-            <el-input-number size="mini" v-model="listQuery.moneyEnd" placeholder="结束数量"
-              controls-position="right"></el-input-number>
           </el-form-item>
         </el-form>
       </div>
     </el-card>
-    <el-card v-if="false" class="operate-container" shadow="never">
+    <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+      <span>批量操作</span>
     </el-card>
     <div class="table-container">
       <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="帐号" width="120" align="center">
+        <el-table-column label="会员用户名" width="150" align="center">
           <template slot-scope="scope">{{ scope.row.username }}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="120" align="center">
+        <el-table-column label="会员真实姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
-        <el-table-column label="资产类型" width="80" align="center">
+        <el-table-column label="变动前金额" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.beforeMoney }}</template>
+        </el-table-column>
+        <el-table-column label="变动金额" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.changeMoney }}</template>
+        </el-table-column>
+        <el-table-column label="变动后金额" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.afterMoney }}</template>
+        </el-table-column>
+        <el-table-column label="金额类型" width="120" align="center">
           <template slot-scope="scope">{{ getMoneyType(scope.row.type) }}</template>
         </el-table-column>
-        <el-table-column label="申请数量" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.applyMoney }}</template>
+        <el-table-column label="内容" width="180" align="center">
+          <template slot-scope="scope">{{ scope.row.content }}</template>
         </el-table-column>
-        <el-table-column label="实际数量" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.actualMoney }}</template>
+        <el-table-column label="来源" width="180" align="center">
+          <template slot-scope="scope">{{ getMoneySourceType(scope.row.source) }}</template>
         </el-table-column>
-        <el-table-column label="手续费" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.handlingFee }}</template>
+        <el-table-column label="来源ID" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.sourceId }}</template>
         </el-table-column>
-        <el-table-column label="银行卡号" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.bankCardNumber }}</template>
+        <el-table-column label="创建时间" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
         </el-table-column>
-        <el-table-column label="持卡人" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.cardholder }}</template>
-        </el-table-column>
-        <el-table-column label="银行名称" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.bankName }}</template>
-        </el-table-column>
-        <el-table-column label="支行名称" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.branchName }}</template>
-        </el-table-column>
-        <el-table-column label="状态" width="100" align="center">
-          <template slot-scope="scope">{{ getWithdrawalsStatus(scope.row.status) }}</template>
-        </el-table-column>
-        <el-table-column label="审核状态" width="100" align="center">
-          <template slot-scope="scope">{{ getAuthStatus(scope.row.auditStatus) }}</template>
-        </el-table-column>
-        <el-table-column label="申请时间" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.applyTime | formatDateTime }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="180" align="center" fixed="right">
-          <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="handleDetail(scope.$index, scope.row)">
-              详细
-            </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="handleUpdate(scope.$index, scope.row)">
-              编辑
-            </el-button>
-            <el-button v-if="scope.row.status === 0 && scope.row.auditStatus === 0" size="mini" type="text"
-              @click="handleAuth(scope.$index, scope.row)">
-              审核
-            </el-button>
-            <el-button v-if="scope.row.status === 0 && scope.row.auditStatus === 1" size="mini" type="text"
-              @click="setPaySuccess(scope.row)">
-              打款
-            </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="setAuthAbolish(scope.row)">
-              作废
-            </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
-            </el-button>
-          </template>
-        </el-table-column>
+        
       </el-table>
     </div>
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[10, 15, 20]" :total="total">
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20]" :total="total">
       </el-pagination>
     </div>
-    <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">
-      <div class="detail">
-        <div class="li">
-          <div class="label">会员用户名</div>
-          <div class="value">{{ info.username }}</div>
-        </div>
-        <div class="li">
-          <div class="label">会员真实姓名</div>
-          <div class="value">{{ info.realName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">资产类型</div>
-          <div class="value">{{ getMoneyType(info.type) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">申请金额</div>
-          <div class="value">{{ info.applyMoney }}</div>
-        </div>
-        <div class="li">
-          <div class="label">实际金额</div>
-          <div class="value">{{ info.actualMoney }}</div>
-        </div>
-        <div class="li">
-          <div class="label">手续费</div>
-          <div class="value">{{ info.handlingFee }}</div>
-        </div>
-        <div class="li">
-          <div class="label">银行名称</div>
-          <div class="value">{{ info.bankName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">支行名称</div>
-          <div class="value">{{ info.branchName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">银行卡号</div>
-          <div class="value">{{ info.bankCardNumber }}</div>
-        </div>
-        <div class="li">
-          <div class="label">持卡人</div>
-          <div class="value">{{ info.cardholder }}</div>
-        </div>
-        <div class="li">
-          <div class="label">申请时间</div>
-          <div class="value">{{ info.applyTime }}</div>
-        </div>
-        <div class="li">
-          <div class="label">提现状态</div>
-          <div class="value">{{ getWithdrawalsStatus(info.status) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核状态</div>
-          <div class="value">{{ getAuthStatus(info.auditStatus) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核时间</div>
-          <div class="value">{{ info.auditTime || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核失败原因</div>
-          <div class="value">{{ info.auditReason || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">打款时间</div>
-          <div class="value">{{ info.paymentTime || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">作废时间</div>
-          <div class="value">{{ info.abolishTime || "-" }}</div>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogDetailVisible = false" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog :title="isEdit ? '编辑' : '添加'" :visible.sync="dialogVisible">
-      <el-form :model="info" ref="infoForm" label-width="120px" size="small">
-        <el-form-item label="帐号：">
-          <el-input v-model="info.username" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="昵称：">
-          <el-input v-model="info.nickname"></el-input>
-        </el-form-item>
-        <el-form-item label="性别：">
-          <el-radio-group v-model="info.gender">
-            <el-radio :label="0">未知</el-radio>
-            <el-radio :label="1">男</el-radio>
-            <el-radio :label="2">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="手机：">
-          <el-input v-model="info.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="生日：">
-          <el-date-picker v-model="info.birthday" type="date" placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="称号：">
-          <el-input v-model="info.memberLevelName" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="成就：">
-          <el-input v-model="info.memberHonorLevelName" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="网体编号：">
-          <el-input v-model="info.teamNumber" readonly></el-input>
-        </el-form-item> <el-form-item label="爱心值：">
-          <el-input v-model="info.integral" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="贡献值：">
-          <el-input v-model="info.money" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="人脉值：">
-          <el-input v-model="info.networkValue" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="团队值：">
-          <el-input v-model="info.teamValue" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="已购买爱心：">
-          <el-radio-group v-model="info.isBuySpecific" readonly>
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否启用：">
-          <el-radio-group v-model="info.status">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog :title="'审核'" :visible.sync="dialogAuthVisible">
-      <el-form :model="info" ref="infoForm" label-width="120px" size="small">
-        <el-form-item label="审核状态：">
-          <el-radio-group v-model="info.auditStatus">
-            <el-radio :label="1">通过</el-radio>
-            <el-radio :label="2">驳回</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="驳回原因：" class="row">
-          <el-input v-model="info.auditReason" type="textarea"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogAuthVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleDialogAuthConfirm()" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
+    
+   
+
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, authSuccess, authReject, paySuccess, authAbolish } from '@/api/recharge';
+import { listInfo } from '@/api/moneyChange';
 import { formatDate } from '@/utils/date';
-import { enumWithdrawalsStatus, enumMoneyType, enumAuthStatus } from "@/utils/enums";
+import { enumMoneyType,enumMoneySourceType } from "@/utils/enums";
+import SingleUpload from '@/components/Upload/singleUpload';
+import Tinymce from '@/components/Tinymce';
 
 const defaultListQuery = {
   pageNum: 1,
-  pageSize: 10,
-  keyword: null,
-  applyTime: [],
-  applyTimeStart: null,
-  applyTimeEnd: null,
-  moneyStart: undefined,
-  moneyEnd: undefined,
+  pageSize: 5,
+  name: undefined,
+  createTime: [],
+  createTimeStart: undefined,
+  createTimeEnd: undefined,
 };
 const defaultInfo = {
-  id: null,
+  id: 0,
+  introduction: "",
+  progressContent: "",
+  implementation: "",
 };
 export default {
-  name: 'rechargeList',
+  name: 'projectList',
+  components: { SingleUpload, Tinymce },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
+      category:{
+        list:[],//类别列表
+        dic:{},//类别字典
+      },
       list: null,
       total: null,
       listLoading: false,
       dialogVisible: false,
       info: Object.assign({}, defaultInfo),
+      infoRules: {
+      },
       isEdit: false,
-      allocDialogVisible: false,
-      allocRoleIds: [],
-      allRoleList: [],
-      allocMemberId: null,
       dialogAuthVisible: false,
-      dialogDetailVisible: false,
     }
   },
   created() {
@@ -319,15 +136,9 @@ export default {
       value = value + "";
       const obj = enumMoneyType.find(t => t.value === value);
       return obj ? obj.name : "-";
-    },
-    getWithdrawalsStatus(value) {
+    },getMoneySourceType(value) {
       value = value + "";
-      const obj = enumWithdrawalsStatus.find(t => t.value === value);
-      return obj ? obj.name : "-";
-    },
-    getAuthStatus(value) {
-      value = value + "";
-      const obj = enumAuthStatus.find(t => t.value === value);
+      const obj = enumMoneySourceType.find(t => t.value === value);
       return obj ? obj.name : "-";
     },
     handleResetSearch() {
@@ -337,10 +148,9 @@ export default {
     handleSearchList() {
       const me = this, q = me.listQuery;
       q.pageNum = 1;
-      console.log(q.applyTime);
-      if (q.applyTime.length) {
-        q.applyTimeStart = q.applyTime[0];
-        q.applyTimeEnd = q.applyTime[1];
+      if (q.createTime.length) {
+        q.createTimeStart = q.createTime[0];
+        q.createTimeEnd = q.createTime[1];
       }
       me.getList();
     },
@@ -353,101 +163,6 @@ export default {
       this.listQuery.pageNum = val;
       this.getList();
     },
-    handleAdd() {
-      this.dialogVisible = true;
-      this.isEdit = false;
-      this.info = Object.assign({}, defaultInfo);
-    },
-    handleStatusChange(index, row) {
-      this.$confirm('是否要修改该状态?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        setStatus(row.id, { status: row.status }).then(response => {
-          this.$message({
-            type: 'success',
-            message: '修改成功!'
-          });
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消修改'
-        });
-        this.getList();
-      });
-    },
-    handleDelete(index, row) {
-      this.$confirm('是否要删除该用户?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delInfo(row.id).then(response => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getList();
-        });
-      });
-    },
-    handleDetail(index, row) {
-      this.dialogDetailVisible = true;
-      this.info = Object.assign({}, row);
-    },
-    handleUpdate(index, row) {
-      this.dialogVisible = true;
-      this.isEdit = true;
-      this.info = Object.assign({}, row);
-    },
-    handleAuth(index, row) {
-      this.dialogAuthVisible = true;
-      this.info = Object.assign({}, row);
-    },
-    handleDialogConfirm() {
-      this.$confirm('是否要确认?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (this.isEdit) {
-          setInfo(this.info.id, this.info).then(response => {
-            this.$message({
-              message: '修改成功！',
-              type: 'success'
-            });
-            this.dialogVisible = false;
-            this.getList();
-          })
-        } else {
-          addInfo(this.info).then(response => {
-            this.$message({
-              message: '添加成功！',
-              type: 'success'
-            });
-            this.dialogVisible = false;
-            this.getList();
-          })
-        }
-      })
-    },
-    handleDialogAuthConfirm() {
-      const me = this;
-      if (!me.info.auditStatus) {
-        me.$message({
-          message: '请选择审核状态',
-          type: 'warning'
-        });
-        return;
-      }
-      if (me.info.auditStatus === 1) {
-        me.setAuthSuccess();
-      } else if (me.info.auditStatus === 2) {
-        me.setAuthReject();
-      }
-    },
     getList() {
       this.listLoading = true;
       listInfo(this.listQuery).then(response => {
@@ -456,81 +171,7 @@ export default {
         this.total = response.data.total;
       });
     },
-    setAuthSuccess() {
-      const me = this;
-      me.$confirm('确认要审核通过吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        authSuccess(me.info).then(response => {
-          me.$message({
-            message: '审核通过',
-            type: 'success'
-          });
-          me.dialogAuthVisible = false;
-          me.getList();
-        })
-      })
-    },
-    setAuthReject() {
-      const me = this;
-      if (!me.info.auditReason) {
-        me.$message({
-          message: '请填写驳回原因',
-          type: 'warning'
-        });
-        return;
-      }
-      me.$confirm('确认要驳回吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        authReject(me.info).then(response => {
-          me.$message({
-            message: '驳回完成',
-            type: 'success'
-          });
-          me.dialogAuthVisible = false;
-          me.getList();
-        })
-      })
-    },
-    setPaySuccess(row) {
-      const me = this;
-      me.$confirm('确认已打款吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        paySuccess(row).then(response => {
-          me.$message({
-            message: '已打款完成',
-            type: 'success'
-          });
-          me.dialogAuthVisible = false;
-          me.getList();
-        })
-      })
-    },
-    setAuthAbolish(row) {
-      const me = this;
-      me.$confirm('确认要作废吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        authAbolish(row).then(response => {
-          me.$message({
-            message: '已作废完成',
-            type: 'success'
-          });
-          me.dialogAuthVisible = false;
-          me.getList();
-        })
-      })
-    },
+    
   }
 }
 </script>
@@ -548,7 +189,7 @@ export default {
 
 >>>.el-form-item {
   width: 50%;
-  margin: 0;
+  margin: 15px 0 0;
 }
 
 >>>.el-dialog__body {
@@ -586,6 +227,10 @@ export default {
 >>>.search .el-form-item {
   width: 50%;
   margin: 15px 0 0;
+}
+
+.pagination-container {
+  padding: 0 0 30px;
 }
 </style>
 

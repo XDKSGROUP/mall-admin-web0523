@@ -65,7 +65,7 @@
         dialogVisible: false,
         useOss:true, //使用oss->true;使用MinIO->false
         ossUploadUrl:'http://tooljoin.oss-cn-hangzhou.aliyuncs.com',
-        minioUploadUrl:'http://192.168.124.88:8080/minio/upload',
+        minioUploadUrl:'http://localhost:8080/minio/upload',
       };
     },
     methods: {

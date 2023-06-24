@@ -39,5 +39,25 @@ export const enumProjectProgressStatus = [{
   name: "筹款中", value: "1"
 }, {
   name: "已结束", value: "2"
+  }];
+
+
+export const enumMoneySourceType = [{
+  name: "充值", value: "0"
+}, {
+  name: "提现", value: "1"
+}, {
+  name: "转入", value: "2"
+}, {
+  name: "转出", value: "3"
+}, {
+  name: "捐赠", value: "4"
+}, {
+  name: "购买", value: "5"
+}, {
+  name: "分红", value: "6"
+}, {
+  name: "提现驳回", value: "7"
 }];
+  
 
