@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listInfo(params) {
   return request({
-    url: '/member/recharge/list',
+    url: '/member/transfer/list',
     method: 'POST',
     data: params
   })
