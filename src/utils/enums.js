@@ -41,3 +41,10 @@ export const enumProjectProgressStatus = [{
   name: "已结束", value: "2"
 }];
 
+export const enumRechargeStatus = [{
+  name: "未到账", value: "0"
+}, {
+  name: "已到账", value: "1"
+}, {
+  name: "已作废", value: "2"
+}];

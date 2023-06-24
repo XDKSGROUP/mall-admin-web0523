@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listInfo(params) {
   return request({
-    url: '/member/withdrawals/list',
+    url: '/member/recharge/list',
     method: 'POST',
     data: params
   })
@@ -39,25 +39,10 @@ export function delInfo(id) {
   })
 }
 
-export function authSuccess(params) {
-  return request({
-    url: '/member/withdrawals/auditSuccess',
-    method: 'post',
-    data: params
-  })
-}
-
-export function authReject(params) {
-  return request({
-    url: '/member/withdrawals/auditReject',
-    method: 'post',
-    data: params
-  })
-}
 
 export function paySuccess(params) {
   return request({
-    url: '/member/withdrawals/paymentSuccess',
+    url: '/member/recharge/confirmSuccess',
     method: 'post',
     data: params
   })
@@ -65,7 +50,7 @@ export function paySuccess(params) {
 
 export function authAbolish(params) {
   return request({
-    url: '/member/withdrawals/abolishSuccess',
+    url: '/member/recharge/abolishSuccess',
     method: 'post',
     data: params
   })
