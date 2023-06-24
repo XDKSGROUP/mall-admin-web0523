@@ -3,8 +3,8 @@ import request from '@/utils/request'
 export function listInfo(params) {
   return request({
     url: '/member/list',
-    method: 'get',
-    params: params
+    method: 'POST',
+    data: params
   })
 }
 
@@ -35,7 +35,23 @@ export function setStatus(id, params) {
 export function delInfo(id) {
   return request({
     url: '/member/delete/' + id,
-    method: 'post'
+    method: 'post',
+  })
+}
+
+export function resetLoginPassword(params) {
+  return request({
+    url: '/member/resetPassword',
+    method: 'post',
+    data: params
+  })
+}
+
+export function resetPaymentPassword(params) {
+  return request({
+    url: '/member/resetPaymentPassword',
+    method: 'post',
+    data: params
   })
 }
 

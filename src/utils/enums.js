@@ -3,6 +3,11 @@ export const enumEnableStatus = [{
 }, {
   name: "禁用", value: "1"
 }];
+export const enumYesNo = [{
+  name: "否", value: "0"
+}, {
+  name: "是", value: "1"
+}];
 export const enumAuthStatus = [{
   name: "已申请", value: "0"
 }, {
@@ -59,7 +64,6 @@ export const enumMoneySourceType = [{
 }, {
   name: "提现驳回", value: "7"
 }];
-  
 
 export const enumRechargeStatus = [{
   name: "未到账", value: "0"
@@ -68,3 +72,5 @@ export const enumRechargeStatus = [{
 }, {
   name: "已作废", value: "2"
 }];
+
+

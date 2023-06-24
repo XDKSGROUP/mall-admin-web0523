@@ -11,10 +11,27 @@
           重置
         </el-button>
       </div>
-      <div style="margin-top: 15px">
+      <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.keyword" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          <el-form-item label="用户名：">
+            <el-input v-model="listQuery.username" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="昵称：">
+            <el-input v-model="listQuery.nickname" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="手机号码：">
+            <el-input v-model="listQuery.phone" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="真实姓名：">
+            <el-input v-model="listQuery.realName" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="邀请人用户名：">
+            <el-input v-model="listQuery.inviterUsername" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="创建日期：">
+            <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
+              start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </el-form-item>
         </el-form>
       </div>
@@ -39,7 +56,7 @@
           <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
         </el-table-column>
         <el-table-column label="爱心产品" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.isBuySpecific==1?"已购":"未购" }}</template>
+          <template slot-scope="scope">{{ scope.row.isBuySpecific == 1 ? "已购" : "未购" }}</template>
         </el-table-column>
         <el-table-column label="成就" width="80" align="center">
           <template slot-scope="scope">{{ scope.row.memberHonorLevelName }}</template>
@@ -81,6 +98,12 @@
               @click="handleAuth(scope.$index, scope.row)">
               审核
             </el-button>
+            <el-button size="mini" type="text" @click="handelResetLoginPassword(scope.row)">
+              重置登录密码
+            </el-button>
+            <el-button size="mini" type="text" @click="handelResetPaymentPassword(scope.row)">
+              重置支付密码
+            </el-button>
             <el-button v-if="false" size="mini" type="text" @click="handleSelectRole(scope.$index, scope.row)">分配角色
             </el-button>
             <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
@@ -92,13 +115,13 @@
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[10, 15, 20]" :total="total">
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20]" :total="total">
       </el-pagination>
     </div>
     <el-dialog :title="isEdit ? '编辑' : '添加'" :visible.sync="dialogVisible">
       <el-form :model="member" ref="memberForm" label-width="120px" size="small">
         <el-form-item label="帐号：">
-          <el-input v-model="member.username" readonly></el-input>
+          <el-input v-model="member.username" disabled></el-input>
         </el-form-item>
         <el-form-item label="昵称：">
           <el-input v-model="member.nickname"></el-input>
@@ -118,27 +141,27 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="称号：">
-          <el-input v-model="member.memberLevelName" readonly></el-input>
+          <el-input v-model="member.memberLevelName" disabled></el-input>
         </el-form-item>
         <el-form-item label="成就：">
-          <el-input v-model="member.memberHonorLevelName" readonly></el-input>
+          <el-input v-model="member.memberHonorLevelName" disabled></el-input>
         </el-form-item>
         <el-form-item label="网体编号：">
-          <el-input v-model="member.teamNumber" readonly></el-input>
+          <el-input v-model="member.teamNumber" disabled></el-input>
         </el-form-item> <el-form-item label="爱心值：">
-          <el-input v-model="member.integral" readonly></el-input>
+          <el-input v-model="member.integral" disabled></el-input>
         </el-form-item>
         <el-form-item label="贡献值：">
-          <el-input v-model="member.money" readonly></el-input>
+          <el-input v-model="member.money" disabled></el-input>
         </el-form-item>
         <el-form-item label="人脉值：">
-          <el-input v-model="member.networkValue" readonly></el-input>
+          <el-input v-model="member.networkValue" disabled></el-input>
         </el-form-item>
         <el-form-item label="团队值：">
-          <el-input v-model="member.teamValue" readonly></el-input>
+          <el-input v-model="member.teamValue" disabled></el-input>
         </el-form-item>
         <el-form-item label="已购买爱心：">
-          <el-radio-group v-model="member.isBuySpecific" readonly>
+          <el-radio-group v-model="member.isBuySpecific" disabled>
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
@@ -200,15 +223,20 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole } from '@/api/member';
+import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword } from '@/api/member';
 import { listAll } from '@/api/mmbRole';
 import { formatDate } from '@/utils/date';
 import { enumMemberAuthStatus } from "@/utils/enums";
 
 const defaultListQuery = {
   pageNum: 1,
-  pageSize: 10,
-  keyword: null
+  pageSize: 5,
+  username: undefined,
+  nickname: undefined,
+  phone: undefined,
+  realName: undefined,
+  inviterUsername: undefined,
+  createTime: [],
 };
 const defaultMember = {
   id: null,
@@ -258,7 +286,12 @@ export default {
       this.getList();
     },
     handleSearchList() {
-      this.listQuery.pageNum = 1;
+      const me = this, q = me.listQuery;
+      q.pageNum = 1;
+      if (q.createTime.length) {
+        q.createTimeStart = q.createTime[0];
+        q.createTimeEnd = q.createTime[1];
+      }
       this.getList();
     },
     handleSizeChange(val) {
@@ -417,7 +450,39 @@ export default {
           }
         }
       });
-    }
+    },
+    handelResetLoginPassword(info) {
+      const me=this;
+      me.$confirm('确定要重置登录密码吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        resetLoginPassword(info).then(res => {
+          this.$message({
+            message: '重置完成！',
+            type: 'success'
+          });
+          this.allocDialogVisible = false;
+        });
+      })
+    },
+    handelResetPaymentPassword(info) {
+      const me=this;
+      me.$confirm('确定要重置支付密码吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        resetPaymentPassword(info).then(res => {
+          this.$message({
+            message: '重置完成！',
+            type: 'success'
+          });
+          this.allocDialogVisible = false;
+        });
+      })
+    },
   }
 }
 </script>
@@ -439,6 +504,17 @@ export default {
 
 .row {
   width: 100%;
+}
+
+.search {}
+
+>>>.search .el-form-item {
+  width: 50%;
+  margin: 15px 0 0;
+}
+
+.pagination-container {
+  padding: 0 0 30px;
 }
 </style>
 

@@ -46,7 +46,7 @@
         </el-form>
       </div>
     </el-card>
-    <el-card class="operate-container" shadow="never">
+    <el-card v-if="false" class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>批量操作</span>
     </el-card>
