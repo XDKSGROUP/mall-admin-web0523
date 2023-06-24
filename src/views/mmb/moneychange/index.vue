@@ -31,7 +31,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="来源：">
-            <el-select v-model="listQuery.source" clearable placeholder="请选择">
+            <el-select v-model="listQuery.source" multiple clearable placeholder="请选择">
               <el-option v-for="item in enumMoneySourceType" :key="item.value" :label="item.name" :value="item.value">
               </el-option>
             </el-select>
