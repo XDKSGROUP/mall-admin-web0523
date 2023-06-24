@@ -16,6 +16,24 @@
           <el-form-item label="编号：">
             <el-input size="mini" v-model="listQuery.number" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
+          <el-form-item label="转账方用户名：">
+            <el-input size="mini" v-model="listQuery.transferorUsername" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="转账方真实姓名：">
+            <el-input size="mini" v-model="listQuery.transferorRealName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="接收方用户名：">
+            <el-input size="mini" v-model="listQuery.receiverUsername" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="接收方真实姓名：">
+            <el-input size="mini" v-model="listQuery.receiverRealName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资金类型：">
+            <el-select v-model="listQuery.type" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneyType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建日期：">
             <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
@@ -252,6 +270,10 @@ const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
   number: undefined,
+  transferorUsername: undefined,
+  transferorRealName: undefined,
+  receiverUsername: undefined,
+  receiverRealName: undefined,
   createTime: [],
   createTimeStart: undefined,
   createTimeEnd: undefined,

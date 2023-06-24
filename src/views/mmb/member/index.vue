@@ -38,13 +38,28 @@
         <el-table-column label="称号" width="80" align="center">
           <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
         </el-table-column>
+        <el-table-column label="爱心产品" width="80" align="center">
+          <template slot-scope="scope">{{ scope.row.isBuySpecific==1?"已购":"未购" }}</template>
+        </el-table-column>
         <el-table-column label="成就" width="80" align="center">
           <template slot-scope="scope">{{ scope.row.memberHonorLevelName }}</template>
         </el-table-column>
         <el-table-column label="手机" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
-        <el-table-column label="审核" width="120" align="center">
+        <el-table-column label="爱心值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.integral }}</template>
+        </el-table-column>
+        <el-table-column label="贡献值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.money }}</template>
+        </el-table-column>
+        <el-table-column label="人脉值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.networkValue }}</template>
+        </el-table-column>
+        <el-table-column label="团队值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.teamValue }}</template>
+        </el-table-column>
+        <el-table-column label="实名认证" width="120" align="center">
           <template slot-scope="scope">{{ getAuthStatus(scope.row.realNameStatus) }}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="100" align="center">
@@ -56,8 +71,6 @@
         </el-table-column>
         <el-table-column label="注册时间" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
-        </el-table-column>
-        <el-table-column>
         </el-table-column>
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
