@@ -31,7 +31,7 @@
         </el-form>
       </div>
     </el-card>
-    <el-card class="operate-container" shadow="never">
+    <el-card v-if="false" class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>批量操作</span>
       <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
