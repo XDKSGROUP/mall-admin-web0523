@@ -14,13 +14,35 @@
       <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="会员用户名：">
-            <el-input size="mini" v-model="listQuery.name" class="input-width" placeholder="请输入" clearable></el-input>
+            <el-input size="mini" v-model="listQuery.username" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="会员真实姓名：">
+            <el-input size="mini" v-model="listQuery.realName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资金类型：">
+            <el-select v-model="listQuery.type" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneyType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="创建日期：">
             <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
+          <el-form-item label="来源：">
+            <el-select v-model="listQuery.source" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneySourceType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="变动金额：">
+            <el-input-number size="mini" v-model="listQuery.changeMoneyStart" placeholder="开始数量"
+              controls-position="right"></el-input-number> 至
+            <el-input-number size="mini" v-model="listQuery.changeMoneyEnd" placeholder="结束数量"
+              controls-position="right"></el-input-number>
+          </el-form-item>
+
         </el-form>
       </div>
     </el-card>
@@ -87,10 +109,15 @@ import Tinymce from '@/components/Tinymce';
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
-  name: undefined,
+  username: undefined,
+  realName: undefined,
+  type:undefined,
+  source:undefined,
   createTime: [],
   createTimeStart: undefined,
   createTimeEnd: undefined,
+  changeMoneyStart: undefined,
+  changeMoneyEnd: undefined,
 };
 const defaultInfo = {
   id: 0,
@@ -103,11 +130,9 @@ export default {
   components: { SingleUpload, Tinymce },
   data() {
     return {
+      enumMoneyType,
+      enumMoneySourceType,
       listQuery: Object.assign({}, defaultListQuery),
-      category:{
-        list:[],//类别列表
-        dic:{},//类别字典
-      },
       list: null,
       total: null,
       listLoading: false,

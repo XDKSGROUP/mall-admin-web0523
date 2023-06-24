@@ -47,7 +47,7 @@
         <el-table-column label="姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
-        <el-table-column label="资产类型" width="80" align="center">
+        <el-table-column label="资金类型" width="80" align="center">
           <template slot-scope="scope">{{ getMoneyType(scope.row.type) }}</template>
         </el-table-column>
         <el-table-column label="申请数量" width="80" align="center">
@@ -122,7 +122,7 @@
           <div class="value">{{ info.realName }}</div>
         </div>
         <div class="li">
-          <div class="label">资产类型</div>
+          <div class="label">资金类型</div>
           <div class="value">{{ getMoneyType(info.type) }}</div>
         </div>
         <div class="li">

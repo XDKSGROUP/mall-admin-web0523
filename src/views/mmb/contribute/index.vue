@@ -16,6 +16,18 @@
           <el-form-item label="编号：">
             <el-input size="mini" v-model="listQuery.number" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
+          <el-form-item label="会员用户名：">
+            <el-input size="mini" v-model="listQuery.username" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="会员真实姓名：">
+            <el-input size="mini" v-model="listQuery.realName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资金类型：">
+            <el-select v-model="listQuery.donationType" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneyType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="捐赠日期：">
             <el-date-picker size="mini" v-model="listQuery.donationTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
@@ -40,6 +52,12 @@
       <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
         <el-table-column label="编号" width="150" align="center">
           <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+        <el-table-column label="会员用户名" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.username }}</template>
+        </el-table-column>
+        <el-table-column label="会员真实姓名" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
         <el-table-column label="资金类型" width="150" align="center">
           <template slot-scope="scope">{{ getMoneyType(scope.row.donationType) }}</template>
@@ -109,7 +127,7 @@
           <div class="value">{{ info.categoryName }}</div>
         </div>
         <div class="li">
-          <div class="label">资产类型</div>
+          <div class="label">资金类型</div>
           <div class="value">{{ info.type }}</div>
         </div>
         <div class="li">
@@ -265,6 +283,9 @@ const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
   number: undefined,
+  username: undefined,
+  realName: undefined,
+  donationType: undefined,
   donationTime: [],
   donationTimeStart: undefined,
   donationTimeEnd: undefined,
@@ -282,6 +303,7 @@ export default {
   components: { Tinymce },
   data() {
     return {
+      enumMoneyType:enumMoneyType,
       listQuery: Object.assign({}, defaultListQuery),
       category: {
         list: [],//类别列表
