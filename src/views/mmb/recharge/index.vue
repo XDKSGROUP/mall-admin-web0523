@@ -16,6 +16,18 @@
           <el-form-item label="编号：">
             <el-input size="mini" v-model="listQuery.number" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
+          <el-form-item label="会员用户名：">
+            <el-input size="mini" v-model="listQuery.username" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="会员真实姓名：">
+            <el-input size="mini" v-model="listQuery.realName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资金类型：">
+            <el-select v-model="listQuery.type" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneyType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建日期：">
             <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
@@ -41,6 +53,12 @@
         <el-table-column label="编号" width="150" align="center">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
+        <el-table-column label="用户名" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.username }}</template>
+        </el-table-column>
+        <el-table-column label="真实姓名" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.realName }}</template>
+        </el-table-column>
         <el-table-column label="资金类型" width="150" align="center">
           <template slot-scope="scope">{{ getMoneyType(scope.row.type) }}</template>
         </el-table-column>
@@ -50,12 +68,6 @@
         <el-table-column label="转账截图" width="100" align="center">
           <template slot-scope="scope"><el-image style="width: 80px; height: 80px" :src="scope.row.rechargePic"
               fit="contain"></el-image></template>
-        </el-table-column>
-        <el-table-column label="用户名" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.username }}</template>
-        </el-table-column>
-        <el-table-column label="真实姓名" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
         <el-table-column label="充值状态" width="160" align="center">
           <template slot-scope="scope">{{ getRechargeStatus(scope.row.status) }}</template>
@@ -106,7 +118,7 @@
           <div class="value">{{ info.categoryName }}</div>
         </div>
         <div class="li">
-          <div class="label">资产类型</div>
+          <div class="label">资金类型</div>
           <div class="value">{{ info.type }}</div>
         </div>
         <div class="li">
@@ -262,6 +274,9 @@ const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
   number: undefined,
+  username:undefined,
+  realName:undefined,
+  type:undefined,
   createTime: [],
   createTimeStart: undefined,
   createTimeEnd: undefined,
@@ -279,6 +294,7 @@ export default {
   components: { Tinymce },
   data() {
     return {
+      enumMoneyType,
       listQuery: Object.assign({}, defaultListQuery),
       category: {
         list: [],//类别列表

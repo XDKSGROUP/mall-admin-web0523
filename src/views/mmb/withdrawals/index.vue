@@ -13,9 +13,20 @@
       </div>
       <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input size="mini" v-model="listQuery.keyword" class="input-width" placeholder="帐号/姓名"
-              clearable></el-input>
+          <el-form-item label="编号：">
+            <el-input size="mini" v-model="listQuery.number" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="会员用户名：">
+            <el-input size="mini" v-model="listQuery.username" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="会员真实姓名：">
+            <el-input size="mini" v-model="listQuery.realName" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资金类型：">
+            <el-select v-model="listQuery.type" clearable placeholder="请选择">
+              <el-option v-for="item in enumMoneyType" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="申请日期：">
             <el-date-picker size="mini" v-model="listQuery.applyTime" type="daterange" range-separator="至"
@@ -38,8 +49,8 @@
     </el-card>
     <div class="table-container">
       <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
-        <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
+        <el-table-column label="编号" width="140" align="center">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
         <el-table-column label="帐号" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.username }}</template>
@@ -47,7 +58,7 @@
         <el-table-column label="姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
-        <el-table-column label="资产类型" width="80" align="center">
+        <el-table-column label="资金类型" width="80" align="center">
           <template slot-scope="scope">{{ getMoneyType(scope.row.type) }}</template>
         </el-table-column>
         <el-table-column label="申请数量" width="80" align="center">
@@ -122,7 +133,7 @@
           <div class="value">{{ info.realName }}</div>
         </div>
         <div class="li">
-          <div class="label">资产类型</div>
+          <div class="label">资金类型</div>
           <div class="value">{{ getMoneyType(info.type) }}</div>
         </div>
         <div class="li">
@@ -273,10 +284,13 @@ import { enumWithdrawalsStatus, enumMoneyType, enumAuthStatus } from "@/utils/en
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 10,
-  keyword: null,
+  number: undefined,
+  username: undefined,
+  realName: undefined,
+  type:undefined,
   applyTime: [],
-  applyTimeStart: null,
-  applyTimeEnd: null,
+  applyTimeStart: undefined,
+  applyTimeEnd: undefined,
   moneyStart: undefined,
   moneyEnd: undefined,
 };
@@ -287,6 +301,7 @@ export default {
   name: 'withdrawalsList',
   data() {
     return {
+      enumMoneyType,
       listQuery: Object.assign({}, defaultListQuery),
       list: null,
       total: null,

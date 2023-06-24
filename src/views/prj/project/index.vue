@@ -105,7 +105,7 @@
           <div class="value">{{ info.categoryName }}</div>
         </div>
         <div class="li">
-          <div class="label">资产类型</div>
+          <div class="label">资金类型</div>
           <div class="value">{{ info.type }}</div>
         </div>
         <div class="li">
