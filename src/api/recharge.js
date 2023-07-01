@@ -55,3 +55,19 @@ export function authAbolish(params) {
     data: params
   })
 }
+
+export function authSuccess(params) {
+  return request({
+    url: '/member/recharge/confirmSuccess',
+    method: 'post',
+    data: params
+  })
+}
+
+export function authReject(params) {
+  return request({
+    url: '/member/recharge/confirmSuccess',
+    method: 'post',
+    data: params
+  })
+}
