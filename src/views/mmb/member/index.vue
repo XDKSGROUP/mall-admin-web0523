@@ -46,6 +46,9 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
+        <el-table-column label="网体" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.teamNumber }}</template>
+        </el-table-column>
         <el-table-column label="帐号" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.username }}</template>
         </el-table-column>
