@@ -140,7 +140,7 @@ export const asyncRouterMap = [
         path: 'project',
         name: 'project',
         component: () => import('@/views/prj/project/index'),
-        meta: {title: '会员列表', icon: 'ums-admin'}
+        meta: {title: '项目列表', icon: 'ums-admin'}
       },
     ]
   },
@@ -433,6 +433,21 @@ export const asyncRouterMap = [
         name: 'teamlist',
         component: () => import('@/views/mmb/teamlist/index'),
         meta: {title: '团队列表', icon: 'ums-admin'}
+      },
+    ]
+  },
+  {
+    path:'/cms',
+    component: Layout,
+    redirect: '/cms/notice',
+    name: 'cms',
+    meta: {title: '内容', icon: 'cms'},
+    children: [
+      {
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/views/cms/notice/index'),
+        meta: {title: '公告列表', icon: 'ums-admin'}
       },
     ]
   },

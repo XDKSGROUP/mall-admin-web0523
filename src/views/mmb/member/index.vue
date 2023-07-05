@@ -196,10 +196,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="身份证正面：">
-          <el-image style="width: 100%; height: 100px" :src="member.idCardFront" fit="contain"></el-image>
+          <el-image style="width: 100%; height: 100px" :src="member.idCardFront" fit="contain"
+            @click="previewShow(member.idCardFront)"></el-image>
         </el-form-item>
         <el-form-item label="身份证反面：">
-          <el-image style="width: 100%; height: 100px" :src="member.idCardBack" fit="contain"></el-image>
+          <el-image style="width: 100%; height: 100px" :src="member.idCardBack" fit="contain"
+            @click="previewShow(member.idCardBack)"></el-image>
         </el-form-item>
         <el-form-item label="驳回原因：" class="row">
           <el-input v-model="member.certificationRejectReason" type="textarea"></el-input>
@@ -218,6 +220,12 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="allocDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="handleAllocDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="预览图片" :visible.sync="preview.isShow" width="100%">
+      <img :src="preview.src" style="width:100%;height:600px;" />
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -244,6 +252,7 @@ const defaultMember = {
   nickname: null,
   status: 1
 };
+
 export default {
   name: 'memberList',
   data() {
@@ -260,6 +269,10 @@ export default {
       allRoleList: [],
       allocMemberId: null,
       dialogAuthVisible: false,
+      preview: {
+        isShow: false,
+        src: ""
+      }
     }
   },
   created() {
@@ -452,7 +465,7 @@ export default {
       });
     },
     handelResetLoginPassword(info) {
-      const me=this;
+      const me = this;
       me.$confirm('确定要重置登录密码吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -468,7 +481,7 @@ export default {
       })
     },
     handelResetPaymentPassword(info) {
-      const me=this;
+      const me = this;
       me.$confirm('确定要重置支付密码吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -482,6 +495,10 @@ export default {
           this.allocDialogVisible = false;
         });
       })
+    },
+    previewShow(src) {
+      this.preview.src = src;
+      this.preview.isShow = true;
     },
   }
 }

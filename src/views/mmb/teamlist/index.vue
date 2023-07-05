@@ -1,6 +1,9 @@
 <template>
-  <div class="app-container">
-    <vue-okr-tree :data="testData"></vue-okr-tree>
+  <div class="container">
+    <div class="li" v-for="(it, idx) in testData" :key="idx">
+      <div class="name">{{ it.label }}</div>
+      <div class="btn" @click="showChild()">+</div>
+    </div>
   </div>
 </template>
 <script>
@@ -45,6 +48,22 @@ export default {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.container {
+  width: 100%;
+}
+
+.li {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.li .btn{
+  cursor:pointer;
+
+}
+
+</style>
 
 
