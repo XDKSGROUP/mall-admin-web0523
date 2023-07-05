@@ -92,17 +92,20 @@
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="handleUpdate(scope.$index, scope.row)">
-              编辑
+              信息编辑
+            </el-button>
+            <el-button size="mini" type="text" @click="handleUpdateProperty(scope.$index, scope.row)">
+              资产编辑
             </el-button>
             <el-button v-if="scope.row.realNameStatus === 1" size="mini" type="text"
               @click="handleAuth(scope.$index, scope.row)">
-              审核
+              实名审核
             </el-button>
             <el-button size="mini" type="text" @click="handelResetLoginPassword(scope.row)">
-              重置登录密码
+              登录重置
             </el-button>
             <el-button size="mini" type="text" @click="handelResetPaymentPassword(scope.row)">
-              重置支付密码
+              支付重置
             </el-button>
             <el-button v-if="false" size="mini" type="text" @click="handleSelectRole(scope.$index, scope.row)">分配角色
             </el-button>
@@ -148,7 +151,8 @@
         </el-form-item>
         <el-form-item label="网体编号：">
           <el-input v-model="member.teamNumber" disabled></el-input>
-        </el-form-item> <el-form-item label="爱心值：">
+        </el-form-item>
+        <el-form-item label="爱心值：">
           <el-input v-model="member.integral" disabled></el-input>
         </el-form-item>
         <el-form-item label="贡献值：">
@@ -176,6 +180,33 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :title="'编辑会员资产'" :visible.sync="dialogPropertyVisible">
+      <el-form :model="property" ref="memberForm" label-width="120px" size="small">
+        <el-form-item label="资产：">
+          <el-radio-group v-model="property.type">
+            <el-radio :label="0">爱心值</el-radio>
+            <el-radio :label="1">贡献值</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="操作：">
+          <el-radio-group v-model="property.changeType">
+            <el-radio :label="0">增加</el-radio>
+            <el-radio :label="1">扣减</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="变动金额：">
+          <el-input v-model="property.changeMoney" placeholder="请输入变动金额"></el-input>
+        </el-form-item>
+        
+        <el-form-item label="原因：">
+          <el-input v-model="property.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogPropertyVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handlePropertyDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="'审核'" :visible.sync="dialogAuthVisible">
@@ -231,7 +262,7 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword } from '@/api/member';
+import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword,updateProperty } from '@/api/member';
 import { listAll } from '@/api/mmbRole';
 import { formatDate } from '@/utils/date';
 import { enumMemberAuthStatus } from "@/utils/enums";
@@ -246,6 +277,14 @@ const defaultListQuery = {
   inviterUsername: undefined,
   createTime: [],
 };
+const defaultProperty = {
+  id: null,
+  type: null,
+  changeType: null,
+  changeMoney: 1,
+  content: null
+};
+
 const defaultMember = {
   id: null,
   username: null,
@@ -263,12 +302,14 @@ export default {
       listLoading: false,
       dialogVisible: false,
       member: Object.assign({}, defaultMember),
+      property: Object.assign({}, defaultProperty),
       isEdit: false,
       allocDialogVisible: false,
       allocRoleIds: [],
       allRoleList: [],
       allocMemberId: null,
       dialogAuthVisible: false,
+      dialogPropertyVisible: false,
       preview: {
         isShow: false,
         src: ""
@@ -357,9 +398,14 @@ export default {
       });
     },
     handleUpdate(index, row) {
+      console.log(row);
       this.dialogVisible = true;
       this.isEdit = true;
       this.member = Object.assign({}, row);
+    },
+    handleUpdateProperty(index, row) {
+      this.dialogPropertyVisible = true;
+      this.property.id = row.id;
     },
     handleAuth(index, row) {
       this.dialogAuthVisible = true;
@@ -390,6 +436,22 @@ export default {
             this.getList();
           })
         }
+      })
+    },
+    handlePropertyDialogConfirm() {
+      const me = this;
+      me.$confirm('是否要确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateProperty(me.property).then(res => {
+          this.$message({
+            message: '操作完成！',
+            type: 'success'
+          });
+          this.dialogPropertyVisible = false;
+        });
       })
     },
     handleDialogAuthConfirm() {
