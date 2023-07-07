@@ -256,11 +256,8 @@
         <el-button type="primary" @click="handleAllocDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="预览图片" :visible.sync="preview.isShow" width="100%">
-      <img :src="preview.src" style="width:100%;height:600px;" />
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="small">确 定</el-button>
-      </span>
+    <el-dialog title="预览图片" :visible.sync="preview.isShow" width="90%" style="text-align: center;">
+      <img :src="preview.src" style="height:600px;" />
     </el-dialog>
   </div>
 </template>

@@ -66,8 +66,10 @@
           <template slot-scope="scope">{{ scope.row.rechargeMoney }}</template>
         </el-table-column>
         <el-table-column label="转账截图" width="100" align="center">
-          <template slot-scope="scope"><el-image style="width: 80px; height: 80px" :src="scope.row.rechargePic"
-              fit="contain"></el-image></template>
+          <template slot-scope="scope">
+            <el-image style="width: 80px; height: 80px" :src="scope.row.rechargePic" @click="previewShow(scope.row.rechargePic)"
+              fit="contain"></el-image>
+            </template>
         </el-table-column>
         <el-table-column label="充值状态" width="160" align="center">
           <template slot-scope="scope">{{ getRechargeStatus(scope.row.status) }}</template>
@@ -262,6 +264,9 @@
         <el-button type="primary" @click="handleDialogAuthConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="预览图片" :visible.sync="preview.isShow" width="90%" style="text-align: center;">
+      <img :src="preview.src" style="height:600px;" />
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -358,6 +363,10 @@ export default {
       isEdit: false,
       dialogAuthVisible: false,
       dialogDetailVisible: false,
+      preview: {
+        isShow: false,
+        src: ""
+      }
     }
   },
   created() {
@@ -552,6 +561,10 @@ export default {
           me.getList();
         })
       })
+    },
+    previewShow(src) {
+      this.preview.src = src;
+      this.preview.isShow = true;
     },
   }
 }
