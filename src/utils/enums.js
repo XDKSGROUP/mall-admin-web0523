@@ -73,4 +73,10 @@ export const enumRechargeStatus = [{
   name: "已作废", value: "2"
 }];
 
+export const enumNotice = [{
+  name: "通知", value: "1"
+}, {
+  name: "公告", value: "2"
+}];
+
 

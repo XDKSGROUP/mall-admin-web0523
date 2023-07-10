@@ -13,11 +13,19 @@
       </div>
       <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="项目名称：">
-            <el-input size="mini" v-model="listQuery.name" class="input-width" placeholder="请输入" clearable></el-input>
+          <el-form-item label="标题：">
+            <el-input size="mini" v-model="listQuery.title" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="简介：">
+            <el-input size="mini" v-model="listQuery.intro" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="类型：">
+            <el-radio-group v-model="listQuery.type">
+              <el-radio v-for="(it, at) in enumNotice" :key="at" :label="parseInt(it.value)">{{ it.name }}</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="创建日期：">
-            <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
+            <el-date-picker size="mini" v-model="listQuery.publishTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
@@ -34,42 +42,24 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="项目名称" width="150" align="center">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+        <el-table-column label="标题" width="350" align="center">
+          <template slot-scope="scope">
+            <div style="text-align: left;">{{ scope.row.title }}</div>
+          </template>
         </el-table-column>
-        <el-table-column label="类别" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.categoryName }}</template>
+        <el-table-column label="类型" width="120" align="center">
+          <template slot-scope="scope">{{ getNoticeType(scope.row.type) }}</template>
         </el-table-column>
-        <el-table-column label="展示图" width="100" align="center">
-          <template slot-scope="scope"><el-image style="width: 80px; height: 80px" :src="scope.row.pic"
-              fit="contain"></el-image></template>
+        <el-table-column label="简介" width="350" align="center">
+          <template slot-scope="scope">{{ scope.row.intro }}</template>
         </el-table-column>
-        <el-table-column label="善款接收方" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.donationsReceiver }}</template>
+        <el-table-column label="查看次数" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.pageview }}</template>
         </el-table-column>
-        <el-table-column label="执行机构" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.actuator }}</template>
+        <el-table-column label="发布时间" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.publishTime | formatDateTime }}</template>
         </el-table-column>
-        <el-table-column label="目标金额" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.targetMoney }}</template>
-        </el-table-column>
-        <el-table-column label="已筹金额" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.raisedMoney }}</template>
-        </el-table-column>
-        <el-table-column label="捐赠份数" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.donationsNumber }}</template>
-        </el-table-column>
-        <el-table-column label="关注人数" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.followersNumber }}</template>
-        </el-table-column>
-        <el-table-column label="进展状态" width="80" align="center">
-          <template slot-scope="scope">{{ getProjectProgressStatus(scope.row.progressStatus) }}</template>
-        </el-table-column>
-        <el-table-column label="状态" width="100" align="center">
-          <template slot-scope="scope">{{ getEnableStatus(scope.row.publishStatus) }}</template>
-        </el-table-column>
-        <el-table-column label="创建时间" width="160" align="center">
-          <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
+        <el-table-column label="">
         </el-table-column>
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
@@ -171,66 +161,19 @@
     </el-dialog>
     <el-dialog :title="isEdit ? '编辑' : '添加'" :visible.sync="dialogVisible">
       <el-form :model="info" ref="infoForm" :rules="infoRules" label-width="120px" size="small">
-        <el-form-item prop="pic" label="展示图：" class="row">
-          <single-upload v-model="info.pic"></single-upload>
+        <el-form-item prop="title" label="标题：">
+          <el-input v-model="info.title" placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item prop="name" label="名称：">
-          <el-input v-model="info.name" placeholder="请输入"></el-input>
-        </el-form-item>
-        <el-form-item prop="categoryId" label="类别：">
-          <el-cascader :value="[info.categoryId]" :options="category.list" :props="{ checkStrictly: true }" clearable
-            @change="info.categoryId=arguments[0][0];info.categoryName = category.dic[info.categoryId]"></el-cascader>
-        </el-form-item>
-        <el-form-item prop="donationsReceiver" label="善款接收方：">
-          <el-input v-model="info.donationsReceiver" placeholder="请输入"></el-input>
-        </el-form-item>
-        <el-form-item prop="actuator" label="执行机构：">
-          <el-input v-model="info.actuator" placeholder="请输入"></el-input>
-        </el-form-item>
-        <el-form-item prop="targetMoney" label="目标金额：">
-          <el-input-number v-model="info.targetMoney" controls-position="right" :min="1" :max="9999999999"
-            placeholder="请输入"></el-input-number>
-        </el-form-item>
-        <el-form-item prop="raisedMoney" label="已筹金额：">
-          <el-input-number v-model="info.raisedMoney" controls-position="right" :min="1" :max="9999999999"
-            placeholder="请输入"></el-input-number>
-        </el-form-item>
-        <el-form-item prop="donationsNumber" label="捐赠份数：">
-          <el-input-number v-model="info.donationsNumber" controls-position="right" :step="1" :min="1" :max="9999999999"
-            placeholder="请输入"></el-input-number>
-        </el-form-item>
-        <el-form-item prop="followersNumber" label="关注人数：">
-          <el-input-number v-model="info.followersNumber" controls-position="right" :step="1" :min="1" :max="9999999999"
-            placeholder="请输入"></el-input-number>
-        </el-form-item>
-        <el-form-item prop="progressStatus" label="进展状态：">
-          <el-radio-group v-model="info.progressStatus">
-            <el-radio :label="0">未开始</el-radio>
-            <el-radio :label="1">筹款中</el-radio>
-            <el-radio :label="2">已结束</el-radio>
+        <el-form-item prop="type" label="类型：">
+          <el-radio-group v-model="info.type">
+            <el-radio v-for="(it, at) in enumNotice" :key="at" :label="parseInt(it.value)">{{ it.name }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item prop="publishStatus" label="启用状态：">
-          <el-radio-group v-model="info.publishStatus">
-            <el-radio :label="0">启用</el-radio>
-            <el-radio :label="1">禁用</el-radio>
-          </el-radio-group>
+        <el-form-item prop="intro" label="简介：" class="row">
+          <el-input v-model="info.intro" type="textarea" placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item prop="releaseTime" label="发布时间：">
-          <el-date-picker v-model="info.releaseTime" type="date" placeholder="请选择">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item prop="textarea" label="简介：" class="row">
-          <el-input v-model="info.info" type="textarea" placeholder="请输入"></el-input>
-        </el-form-item>
-        <el-form-item prop="introduction" label="项目介绍：" class="row">
-          <tinymce :height="300" v-model="info.introduction" placeholder="请输入"></tinymce>
-        </el-form-item>
-        <el-form-item prop="progressContent" label="进展内容：" class="row">
-          <tinymce :height="300" v-model="info.progressContent" placeholder="请输入"></tinymce>
-        </el-form-item>
-        <el-form-item prop="implementation" label="执行情况：" class="row">
-          <tinymce :height="300" v-model="info.implementation" placeholder="请输入"></tinymce>
+        <el-form-item prop="contents" label="内容：" class="row">
+          <tinymce :height="300" v-model="info.contents" placeholder="请输入"></tinymce>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -258,36 +201,39 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, authSuccess, authReject } from '@/api/project';
-import { listInfo as classListInfo } from '@/api/projectClass';
+import { listInfo, addInfo, setInfo, setStatus, delInfo } from '@/api/notice';
 import { formatDate } from '@/utils/date';
-import { enumProjectProgressStatus, enumEnableStatus } from "@/utils/enums";
+import { enumNotice } from "@/utils/enums";
 import SingleUpload from '@/components/Upload/singleUpload';
 import Tinymce from '@/components/Tinymce';
 
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
-  name: undefined,
-  createTime: [],
-  createTimeStart: undefined,
-  createTimeEnd: undefined,
+  title: undefined,
+  type: undefined,
+  intro: undefined,
+  publishTime: [],
+  publishTimeStart: undefined,
+  publishTimeEnd: undefined,
 };
 const defaultInfo = {
   id: 0,
-  introduction: "",
-  progressContent: "",
-  implementation: "",
+  type: "",
+  title: "",
+  intro: "",
+  contents: "",
 };
 export default {
   name: 'projectList',
   components: { SingleUpload, Tinymce },
   data() {
     return {
+      enumNotice,
       listQuery: Object.assign({}, defaultListQuery),
-      category:{
-        list:[],//类别列表
-        dic:{},//类别字典
+      category: {
+        list: [],//类别列表
+        dic: {},//类别字典
       },
       list: null,
       total: null,
@@ -350,7 +296,6 @@ export default {
     }
   },
   created() {
-    this.getClassList();
     this.getList();
   },
   filters: {
@@ -363,25 +308,9 @@ export default {
     }
   },
   methods: {
-    async getClassList() {
-      const me = this,
-        rst = await classListInfo();
-      if (!rst.data) return;
-      const get = (lst) => {
-        return lst.map(o => {
-          me.category.dic[o.id] = o.name;
-          return {
-            label: o.name,
-            value: o.id,
-            children: o.children ? get(o.children) : undefined
-          }
-        });
-      };
-      me.category.list.push(...get(rst.data));
-    },
-    getEnableStatus(value) {
+    getNoticeType(value) {
       value = value + "";
-      const obj = enumEnableStatus.find(t => t.value === value);
+      const obj = enumNotice.find(t => t.value === value);
       return obj ? obj.name : "-";
     },
     getProjectProgressStatus(value) {
@@ -396,9 +325,9 @@ export default {
     handleSearchList() {
       const me = this, q = me.listQuery;
       q.pageNum = 1;
-      if (q.createTime.length) {
-        q.createTimeStart = q.createTime[0];
-        q.createTimeEnd = q.createTime[1];
+      if (q.publishTime.length) {
+        q.publishTimeStart = q.publishTime[0];
+        q.publishTimeEnd = q.publishTime[1];
       }
       me.getList();
     },
@@ -412,12 +341,12 @@ export default {
       this.getList();
     },
     handleAdd() {
-      const me=this;
+      const me = this;
       me.dialogVisible = true;
       me.isEdit = false;
       me.info = Object.assign({}, defaultInfo);
-      me.$nextTick(()=>{
-        me.$refs.infoForm&&me.$refs.infoForm.clearValidate();
+      me.$nextTick(() => {
+        me.$refs.infoForm && me.$refs.infoForm.clearValidate();
       })
     },
     handleStatusChange(index, row) {
@@ -460,12 +389,12 @@ export default {
       this.info = Object.assign({}, row);
     },
     handleUpdate(index, row) {
-      const me=this;
+      const me = this;
       me.dialogVisible = true;
       me.isEdit = true;
       me.info = Object.assign({}, row);
-      me.$nextTick(()=>{
-        me.$refs.infoForm&&me.$refs.infoForm.clearValidate();
+      me.$nextTick(() => {
+        me.$refs.infoForm && me.$refs.infoForm.clearValidate();
       })
     },
     handleAuth(index, row) {
@@ -478,14 +407,13 @@ export default {
         if (!valid) {
           return;
         }
-        info.releaseTime = formatDate(new Date(info.releaseTime), 'yyyy-MM-dd hh:mm:ss');
         me.$confirm('是否要确认?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           if (me.isEdit) {
-            setInfo(info.id, info).then(response => {
+            setInfo(info).then(response => {
               me.$message({
                 message: '修改成功！',
                 type: 'success'
