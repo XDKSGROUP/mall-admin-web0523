@@ -45,7 +45,7 @@
         },
         dialogVisible: false,
         dialogImageUrl:null,
-        useOss:false, //使用oss->true;使用MinIO->false
+        useOss:true, //使用oss->true;使用MinIO->false
         ossUploadUrl:'http://pinganwh.oss-cn-hangzhou.aliyuncs.com',
         minioUploadUrl:'http://localhost:8080/minio/upload',
       };

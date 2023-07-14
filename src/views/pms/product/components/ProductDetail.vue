@@ -168,7 +168,7 @@
                 message: '提交成功',
                 duration:1000
               });
-              location.reload();
+              this.$router.push("/pms/product");
             });
           }
         })

@@ -117,7 +117,7 @@
       </el-form-item>
       <el-form-item label="属性图片：" v-if="hasAttrPic">
         <el-card shadow="never" class="cardBg">
-          <div v-for="(item,index) in selectProductAttrPics">
+          <div v-for="(item,index) in selectProductAttrPics" :key="index">
             <span>{{item.name}}:</span>
             <single-upload v-model="item.pic"
                            style="width: 300px;display: inline-block;margin-left: 10px"></single-upload>
@@ -126,7 +126,7 @@
       </el-form-item>
       <el-form-item label="商品参数：">
         <el-card shadow="never" class="cardBg">
-          <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
+          <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}" :key="index">
             <div class="paramInputLabel">{{item.name}}:</div>
             <el-select v-if="item.inputType===1" class="paramInput" v-model="selectProductParam[index].value">
               <el-option

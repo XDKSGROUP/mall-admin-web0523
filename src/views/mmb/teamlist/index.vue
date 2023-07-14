@@ -1,40 +1,59 @@
 <template>
   <div class="container">
-    <div class="li" v-for="(it, idx) in testData" :key="idx">
-      <div class="name">{{ it.label }}</div>
-      <div class="btn" @click="showChild()">+</div>
-    </div>
+    <nodes v-model="testData" :level="0"></nodes>
   </div>
 </template>
 <script>
+import nodes from '@/components/L/LTreeNode.vue'
 
 export default {
   name: 'teamlist',
+  components: {
+    nodes
+  },
   data() {
     return {
-      testData: [{
-        label: 'xxx科技有有限公司',
-        children: [{
-          label: '产品研发部',
-          children: [{
-            label: '研发-前端',
-          }, {
-            label: '研发-后端',
-          }, {
-            label: 'UI 设计',
-          }]
-        }, {
-          label: '销售部',
-          children: [{
-            label: '销售一部',
-          }, {
-            label: '销售二部',
-          }
+      testData: [
+        {
+          title: '梁当',
+          children: [
+            {
+              title: '月星',
+              children: [
+                {
+                  title: '王小某',
+                  children: [
+                    {
+                      title: '李清',
+                      children: [
+                        {
+                          title: '刘雪',
+                        }, {
+                          title: '龙易',
+                        }]
+                    }, {
+                      title: '林树风',
+                      children: [
+                        {
+                          title: '王一博',
+                        }, {
+                          title: '林学名',
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  title: "王广"
+                }
+              ]
+            },
+            {
+              title: '巩新'
+            }
           ]
-        }, {
-          label: '财务部'
-        }]
-      }]
+        }
+      ]
     }
   },
   created() {
@@ -59,11 +78,10 @@ export default {
   text-align: center;
 }
 
-.li .btn{
-  cursor:pointer;
+.li .btn {
+  cursor: pointer;
 
 }
-
 </style>
 
 
