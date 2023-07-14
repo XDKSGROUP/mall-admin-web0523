@@ -8,6 +8,22 @@ export const enumYesNo = [{
 }, {
   name: "是", value: "1"
 }];
+export const enumPublishStatus = [{
+  name: "未发布", value: "0"
+}, {
+  name: "已发布", value: "1"
+}];
+export const enumPayType = [{
+  name: "未知", value: "0"
+}, {
+  name: "支付宝", value: "1"
+}, {
+  name: "微信", value: "2"
+}, {
+  name: "爱心值", value: "3"
+}, {
+  name: "贡献值", value: "4"
+}];
 export const enumAuthStatus = [{
   name: "已申请", value: "0"
 }, {
@@ -44,7 +60,7 @@ export const enumProjectProgressStatus = [{
   name: "筹款中", value: "1"
 }, {
   name: "已结束", value: "2"
-  }];
+}];
 
 
 export const enumMoneySourceType = [{

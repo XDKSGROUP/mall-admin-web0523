@@ -69,6 +69,39 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
     </el-card>
+    <div class="batch-operate-container">
+      <el-select
+        size="small"
+        v-model="operateType" placeholder="批量操作">
+        <el-option
+          v-for="item in operateOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button
+        style="margin-left: 20px"
+        class="search-button"
+        @click="handleBatchOperate()"
+        type="primary"
+        size="small">
+        确定
+      </el-button>
+    </div>
+    <div class="pagination-container">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        layout="total, sizes,prev, pager, next,jumper"
+        :current-page.sync="listQuery.pageNum"
+        :page-size="listQuery.pageSize"
+        :page-sizes="[5,10,15,20]"
+        :total="total">
+      </el-pagination>
+    </div>
+
     <div class="table-container">
       <el-table ref="orderTable"
                 :data="list"
@@ -127,38 +160,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="batch-operate-container">
-      <el-select
-        size="small"
-        v-model="operateType" placeholder="批量操作">
-        <el-option
-          v-for="item in operateOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button
-        style="margin-left: 20px"
-        class="search-button"
-        @click="handleBatchOperate()"
-        type="primary"
-        size="small">
-        确定
-      </el-button>
-    </div>
-    <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize"
-        :page-sizes="[5,10,15]"
-        :total="total">
-      </el-pagination>
-    </div>
+
     <el-dialog
       title="关闭订单"
       :visible.sync="closeOrder.dialogVisible" width="30%">
@@ -184,7 +186,7 @@
   import LogisticsDialog from '@/views/oms/order/components/logisticsDialog';
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 20,
     orderSn: null,
     receiverKeyword: null,
     status: null,

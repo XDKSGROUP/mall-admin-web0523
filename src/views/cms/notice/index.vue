@@ -201,7 +201,7 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo } from '@/api/notice';
+import { listInfo, addInfo, setInfo, delInfo } from '@/api/notice';
 import { formatDate } from '@/utils/date';
 import { enumNotice } from "@/utils/enums";
 import SingleUpload from '@/components/Upload/singleUpload';

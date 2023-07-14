@@ -77,6 +77,9 @@
         <el-table-column label="商品图片" width="120" align="center">
           <template slot-scope="scope"><img style="height: 80px" :src="scope.row.pic"></template>
         </el-table-column>
+        <el-table-column label="分类" width="100" align="center">
+          <template slot-scope="scope">{{ scope.row.productCategoryName }}</template>
+        </el-table-column>
         <el-table-column label="商品名称" align="center">
           <template slot-scope="scope">
             <p>{{ scope.row.name }}</p>

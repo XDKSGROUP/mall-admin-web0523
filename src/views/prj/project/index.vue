@@ -16,6 +16,12 @@
           <el-form-item label="项目名称：">
             <el-input size="mini" v-model="listQuery.name" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
+          <el-form-item label="发布状态：">
+            <el-select v-model="listQuery.publishStatus" clearable placeholder="请选择">
+              <el-option v-for="item in enumPublishStatus" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建日期：">
             <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
@@ -29,6 +35,12 @@
       <span>批量操作</span>
       <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
     </el-card>
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20]" :total="total">
+      </el-pagination>
+    </div>
     <div class="table-container">
       <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
@@ -65,8 +77,12 @@
         <el-table-column label="进展状态" width="80" align="center">
           <template slot-scope="scope">{{ getProjectProgressStatus(scope.row.progressStatus) }}</template>
         </el-table-column>
-        <el-table-column label="状态" width="100" align="center">
-          <template slot-scope="scope">{{ getEnableStatus(scope.row.publishStatus) }}</template>
+        <el-table-column label="发布状态" width="100" align="center">
+          <template slot-scope="scope">
+            <el-switch @change="handlePublishStatusChange(scope.$index, scope.row)" :active-value="1" :inactive-value="0"
+              v-model="scope.row.publishStatus">
+            </el-switch>
+          </template>
         </el-table-column>
         <el-table-column label="创建时间" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
@@ -82,18 +98,13 @@
             <el-button v-if="scope.row.status === 0" size="mini" type="text" @click="handleAuth(scope.$index, scope.row)">
               审核
             </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20]" :total="total">
-      </el-pagination>
-    </div>
+
     <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">
       <div class="detail">
         <div class="li">
@@ -179,7 +190,7 @@
         </el-form-item>
         <el-form-item prop="categoryId" label="类别：">
           <el-cascader :value="[info.categoryId]" :options="category.list" :props="{ checkStrictly: true }" clearable
-            @change="info.categoryId=arguments[0][0];info.categoryName = category.dic[info.categoryId]"></el-cascader>
+            @change="info.categoryId = arguments[0][0]; info.categoryName = category.dic[info.categoryId]"></el-cascader>
         </el-form-item>
         <el-form-item prop="donationsReceiver" label="善款接收方：">
           <el-input v-model="info.donationsReceiver" placeholder="请输入"></el-input>
@@ -258,17 +269,18 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, authSuccess, authReject } from '@/api/project';
+import { listInfo, addInfo, setInfo, setPublishStatus, delInfo, authSuccess, authReject } from '@/api/project';
 import { listInfo as classListInfo } from '@/api/projectClass';
 import { formatDate } from '@/utils/date';
-import { enumProjectProgressStatus, enumEnableStatus } from "@/utils/enums";
+import { enumProjectProgressStatus, enumEnableStatus,enumPublishStatus } from "@/utils/enums";
 import SingleUpload from '@/components/Upload/singleUpload';
 import Tinymce from '@/components/Tinymce';
 
 const defaultListQuery = {
   pageNum: 1,
-  pageSize: 5,
+  pageSize: 20,
   name: undefined,
+  publishStatus:undefined,
   createTime: [],
   createTimeStart: undefined,
   createTimeEnd: undefined,
@@ -284,10 +296,12 @@ export default {
   components: { SingleUpload, Tinymce },
   data() {
     return {
+      enumEnableStatus,
+      enumPublishStatus,
       listQuery: Object.assign({}, defaultListQuery),
-      category:{
-        list:[],//类别列表
-        dic:{},//类别字典
+      category: {
+        list: [],//类别列表
+        dic: {},//类别字典
       },
       list: null,
       total: null,
@@ -412,12 +426,12 @@ export default {
       this.getList();
     },
     handleAdd() {
-      const me=this;
+      const me = this;
       me.dialogVisible = true;
       me.isEdit = false;
       me.info = Object.assign({}, defaultInfo);
-      me.$nextTick(()=>{
-        me.$refs.infoForm&&me.$refs.infoForm.clearValidate();
+      me.$nextTick(() => {
+        me.$refs.infoForm && me.$refs.infoForm.clearValidate();
       })
     },
     handleStatusChange(index, row) {
@@ -446,7 +460,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delInfo(row.id).then(response => {
+        let params = new URLSearchParams();
+        params.append('ids', [row.id]);
+        params.append('deleteStatus', 1);
+        delInfo(params).then(response => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -460,12 +477,12 @@ export default {
       this.info = Object.assign({}, row);
     },
     handleUpdate(index, row) {
-      const me=this;
+      const me = this;
       me.dialogVisible = true;
       me.isEdit = true;
       me.info = Object.assign({}, row);
-      me.$nextTick(()=>{
-        me.$refs.infoForm&&me.$refs.infoForm.clearValidate();
+      me.$nextTick(() => {
+        me.$refs.infoForm && me.$refs.infoForm.clearValidate();
       })
     },
     handleAuth(index, row) {
@@ -521,12 +538,29 @@ export default {
         me.setAuthReject();
       }
     },
+    handlePublishStatusChange(index, row) {
+      let ids = [];
+      ids.push(row.id);
+      this.updatePublishStatus(row.publishStatus, ids);
+    },
     getList() {
       this.listLoading = true;
       listInfo(this.listQuery).then(response => {
         this.listLoading = false;
         this.list = response.data.list;
         this.total = response.data.total;
+      });
+    },
+    updatePublishStatus(publishStatus, ids) {
+      let params = new URLSearchParams();
+      params.append('ids', ids);
+      params.append('publishStatus', publishStatus);
+      setPublishStatus(params).then(res => {
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
+        });
       });
     },
     setAuthSuccess() {

@@ -24,18 +24,19 @@ export function setInfo(id, data) {
   })
 }
 
-export function setStatus(id, params) {
+export function setPublishStatus(params) {
   return request({
-    url: '/member/updateStatus/' + id,
-    method: 'post',
-    params: params
+    url: '/project/info/update/publishStatus',
+    method:'post',
+    params:params
   })
 }
 
-export function delInfo(id) {
+export function delInfo(params) {
   return request({
-    url: '/member/delete/' + id,
-    method: 'post'
+    url: '/project/info/update/deleteStatus',
+    method:'post',
+    params:params
   })
 }
 
