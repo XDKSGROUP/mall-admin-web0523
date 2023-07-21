@@ -32,9 +32,18 @@ export function getInfo(data) {
   })
 }
 
-export function delInfo(id) {
+export function delInfo(params) {
   return request({
-    url: '/member/delete',
-    method: 'post'
+    url: '/notice/update/deleteStatus',
+    method: 'post',
+    params:params
+  })
+}
+
+export function setPublishStatus(params) {
+  return request({
+    url: '/notice/update/publishStatus',
+    method: 'post',
+    params:params
   })
 }

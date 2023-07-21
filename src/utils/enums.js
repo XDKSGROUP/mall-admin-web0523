@@ -1,7 +1,15 @@
+export const setIdName = (obj, nameField, enumList, idValue, idField) => {
+  const val = idValue.toString(), it = enumList.filter(t => t.value == val)[0];
+  if (!it) return;
+  obj[nameField] = it.name;
+  nameField && (obj[idField] = idValue);
+};
+
+
 export const enumEnableStatus = [{
-  name: "启用", value: "0"
+  name: "启用", value: "1"
 }, {
-  name: "禁用", value: "1"
+  name: "禁用", value: "0"
 }];
 export const enumYesNo = [{
   name: "否", value: "0"
@@ -32,7 +40,7 @@ export const enumAuthStatus = [{
   name: "已驳回", value: "2"
 }];
 
-export const enumMemberAuthStatus = [{
+export const enumMemberRealAuthStatus = [{
   name: "未实名", value: "0"
 }, {
   name: "已申请", value: "1"
@@ -93,6 +101,82 @@ export const enumNotice = [{
   name: "通知", value: "1"
 }, {
   name: "公告", value: "2"
+}];
+
+export const enumGender = [{
+  name: "未知", value: "0"
+}, {
+  name: "男", value: "1"
+}, {
+  name: "女", value: "2"
+}];
+
+export const enumMemberTitle = [{
+  name: "公民", value: "1"
+}, {
+  name: "志愿者", value: "2"
+}, {
+  name: "社工", value: "3"
+}, {
+  name: "退役社工", value: "4"
+}, {
+  name: "站长", value: "5"
+}, {
+  name: "区域站长", value: "6"
+}];
+
+export const enumMemberMTitle = [{
+  name: "无岗位", value: "0"
+}, {
+  name: "站长", value: "5"
+}, {
+  name: "区域站长", value: "6"
+}];
+
+export const enumMemberLevel = [{
+  name: "P0", value: "0"
+}, {
+  name: "P1", value: "1"
+}, {
+  name: "P2", value: "2"
+}, {
+  name: "P3", value: "3"
+}, {
+  name: "P4", value: "4"
+}, {
+  name: "P5", value: "5"
+}, {
+  name: "P6", value: "6"
+}, {
+  name: "P7", value: "7"
+}, {
+  name: "P8", value: "8"
+}, {
+  name: "P9", value: "9"
+}, {
+  name: "P10", value: "10"
+}, {
+  name: "P11", value: "11"
+}, {
+  name: "P12", value: "12"
+}, {
+  name: "P13", value: "13"
+}, {
+  name: "P14", value: "14"
+}, {
+  name: "P15", value: "15"
+}, {
+  name: "P16", value: "16"
+}, {
+  name: "P17", value: "17"
+}, {
+  name: "P18", value: "18"
+}, {
+  name: "P19", value: "19"
+}, {
+  name: "P20", value: "20"
+}, {
+  name: "P21", value: "21"
 }];
 
 

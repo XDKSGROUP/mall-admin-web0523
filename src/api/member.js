@@ -1,11 +1,3 @@
-/*
- * @Author: ft-zhangj ft-zhangj@geek.glodon.com
- * @Date: 2023-06-24 18:34:03
- * @LastEditors: ft-zhangj ft-zhangj@geek.glodon.com
- * @LastEditTime: 2023-07-06 02:25:53
- * @FilePath: \mall-admin-web0523\src\api\member.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import request from '@/utils/request'
 
 export function listInfo(params) {

@@ -451,6 +451,45 @@ export const asyncRouterMap = [
       },
     ]
   },
+  {
+    path:'/stc',
+    component: Layout,
+    redirect: '/stc/memberlevels',
+    name: 'stc',
+    meta: {title: '数据统计', icon: 'stc'},
+    children: [
+      {
+        path: 'memberlevels',
+        name: 'memberlevels',
+        component: () => import('@/views/stc/memberlevels/index'),
+        meta: {title: '会员等级', icon: 'ums-admin'}
+      },
+      {
+        path: 'productorder',
+        name: 'productorder',
+        component: () => import('@/views/stc/productorder/index'),
+        meta: {title: '商品订单', icon: 'order'}
+      },
+      {
+        path: 'financeproperty',
+        name: 'financeproperty',
+        component: () => import('@/views/stc/financeproperty/index'),
+        meta: {title: '财务资产', icon: 'product-attr'}
+      },
+      {
+        path: 'contributeorder',
+        name: 'contributeorder',
+        component: () => import('@/views/stc/contributeorder/index'),
+        meta: {title: '捐购订单', icon: 'sms-subject'}
+      },
+      {
+        path: 'product',
+        name: 'product',
+        component: () => import('@/views/stc/product/index'),
+        meta: {title: '商品', icon: 'product-list'}
+      },
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ]
 

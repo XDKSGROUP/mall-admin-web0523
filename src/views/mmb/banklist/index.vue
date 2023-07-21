@@ -108,7 +108,7 @@
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[10, 15, 20]" :total="total">
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20,50,100]" :total="total">
       </el-pagination>
     </div>
     <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">

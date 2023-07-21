@@ -1,37 +1,113 @@
 <template>
   <div class="app-container">
-    <el-card class="filter-container" shadow="never">
-      <div>
-        <i class="el-icon-search"></i>
-        <span>筛选搜索</span>
-        <el-button style="float:right" type="primary" @click="handleSearchList()" size="small">
-          查询搜索
-        </el-button>
-        <el-button style="float:right;margin-right: 15px" @click="handleResetSearch()" size="small">
-          重置
-        </el-button>
+    <el-card class="search" shadow="never" :class="isShowSearchAll ? '' : 'hide'">
+      <div class="title">
+        <div class="l">
+          <i class="el-icon-search"></i>
+          <span>筛选搜索</span>
+        </div>
+        <div class="r">
+          <el-button style="" type="primary" @click="handleSearchList()" size="small">
+            查询搜索
+          </el-button>
+          <el-button style="" @click="handleResetSearch()" size="small">
+            重置
+          </el-button>
+          <el-button style="" @click="isShowSearchAll = !isShowSearchAll" size="small">
+            {{ isShowSearchAll ? "收缩" : "全部" }}
+          </el-button>
+        </div>
       </div>
-      <div class="search">
+      <div class="cont">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="用户名：">
-            <el-input v-model="listQuery.username" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          <el-form-item label="编号：">
+            <el-input v-model="listQuery.id" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
-          <el-form-item label="昵称：">
-            <el-input v-model="listQuery.nickname" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          <el-form-item label="帐号：">
+            <el-input v-model="listQuery.username" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="手机号码：">
-            <el-input v-model="listQuery.phone" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+            <el-input v-model="listQuery.phone" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="邀请人帐号：">
+            <el-input v-model="listQuery.inviterUsername" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="随机ID：">
+            <el-input v-model="listQuery.teamNumber" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="团队ID：">
+            <el-input v-model="listQuery.commonTeamNumber" class="input-width" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="称号：">
+            <el-select v-model="listQuery.memberLevelId" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumMemberTitle" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="岗位：">
+            <el-select v-model="listQuery.manageLevelId" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumMemberMTitle" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="购买爱心：">
+            <el-select v-model="listQuery.isBuySpecific" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumYesNo" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="真实姓名：">
-            <el-input v-model="listQuery.realName" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+            <el-input v-model="listQuery.realName" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
-          <el-form-item label="邀请人用户名：">
-            <el-input v-model="listQuery.inviterUsername" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          <el-form-item label="实名认证：">
+            <el-select v-model="listQuery.realNameStatus" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumMemberRealAuthStatus" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="成就：">
+            <el-select v-model="listQuery.realNameStatus" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumMemberRealAuthStatus" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="爱心值：">
+            <el-input-number size="mini" v-model="listQuery.integralStart" placeholder="起始值" clearable
+              style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.integralEnd" placeholder="结束值" clearable
+              style="width:120px;"></el-input-number>
+          </el-form-item>
+          <el-form-item label="贡献值：">
+            <el-input-number size="mini" v-model="listQuery.moneyStart" placeholder="起始值" clearable
+              style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.moneyEnd" placeholder="结束值" clearable
+              style="width:120px;"></el-input-number>
+          </el-form-item>
+          <el-form-item label="团队值：">
+            <el-input-number size="mini" v-model="listQuery.teamValueStart" placeholder="起始值" clearable
+              style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.teamValueEnd" placeholder="结束值" clearable
+              style="width:120px;"></el-input-number>
+          </el-form-item>
+          <el-form-item label="积分：">
+            <el-input-number size="mini" v-model="listQuery.integrationStart" placeholder="起始值" clearable
+              style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.integrationEnd" placeholder="结束值" clearable
+              style="width:120px;"></el-input-number>
+          </el-form-item>
+          <el-form-item label="状态：">
+            <el-select v-model="listQuery.status" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in enumEnableStatus" :key="index" :label="item.name"
+                :value="parseInt(item.value)"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="创建日期：">
-            <el-date-picker size="mini" v-model="listQuery.createTime" type="daterange" range-separator="至"
-              start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-model="listQuery.createTime" type="daterange" value-format="yyyy-MM-dd HH:mm:ss"
+              range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
+          </el-form-item>
+          <el-form-item label="昵称：">
+            <el-input v-model="listQuery.nickname" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -41,46 +117,52 @@
       <span>数据列表</span>
       <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
     </el-card>
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20,50,100]" :total="total">
+      </el-pagination>
+    </div>
     <div class="table-container">
       <el-table ref="memberTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="网体" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.teamNumber }}</template>
+        <el-table-column label="随机ID/团队ID" width="140" align="center">
+          <template slot-scope="scope">{{ scope.row.teamNumber }} / {{ scope.row.commonTeamNumber }}</template>
         </el-table-column>
         <el-table-column label="帐号" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.username }}</template>
         </el-table-column>
-        <el-table-column label="昵称" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.nickname }}</template>
+        <el-table-column label="昵称/姓名" width="140" align="center">
+          <template slot-scope="scope">{{ scope.row.nickname }} / {{ scope.row.realName }}</template>
         </el-table-column>
         <el-table-column label="称号" width="80" align="center">
           <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
         </el-table-column>
-        <el-table-column label="爱心产品" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.isBuySpecific == 1 ? "已购" : "未购" }}</template>
+        <el-table-column label="岗位" width="80" align="center">
+          <template slot-scope="scope">{{ scope.row.manageLevelName }}</template>
         </el-table-column>
         <el-table-column label="成就" width="80" align="center">
           <template slot-scope="scope">{{ scope.row.memberHonorLevelName }}</template>
         </el-table-column>
-        <el-table-column label="手机" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        <el-table-column label="邀请人帐号" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.inviterUsername }}</template>
         </el-table-column>
-        <el-table-column label="爱心值" width="120" align="center">
+        <el-table-column label="爱心值" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.integral }}</template>
         </el-table-column>
-        <el-table-column label="贡献值" width="120" align="center">
+        <el-table-column label="贡献值" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.money }}</template>
         </el-table-column>
-        <el-table-column label="人脉值" width="120" align="center">
+        <el-table-column label="人脉值" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.networkValue }}</template>
         </el-table-column>
-        <el-table-column label="团队值" width="120" align="center">
+        <el-table-column label="团队值" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.teamValue }}</template>
         </el-table-column>
-        <el-table-column label="实名认证" width="120" align="center">
-          <template slot-scope="scope">{{ getAuthStatus(scope.row.realNameStatus) }}</template>
+        <el-table-column label="荣誉值" width="100" align="center">
+          <template slot-scope="scope">{{ scope.row.memberHonorLevelValue }}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="100" align="center">
           <template slot-scope="scope">
@@ -92,8 +174,23 @@
         <el-table-column label="注册时间" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
         </el-table-column>
+        <el-table-column label="积分" width="100" align="center">
+          <template slot-scope="scope">{{ scope.row.integration }}</template>
+        </el-table-column>
+        <el-table-column label="手机" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column label="爱心产品" width="80" align="center">
+          <template slot-scope="scope">{{ scope.row.isBuySpecific == 1 ? "已购" : "未购" }}</template>
+        </el-table-column>
+        <el-table-column label="实名认证" width="120" align="center">
+          <template slot-scope="scope">{{ getAuthStatus(scope.row.realNameStatus) }}</template>
+        </el-table-column>
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="handleDetail(scope.$index, scope.row)">
+              信息详细
+            </el-button>
             <el-button size="mini" type="text" @click="handleUpdate(scope.$index, scope.row)">
               信息编辑
             </el-button>
@@ -118,12 +215,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20]" :total="total">
-      </el-pagination>
-    </div>
     <el-dialog :title="isEdit ? '编辑' : '添加'" :visible.sync="dialogVisible">
       <el-form :model="member" ref="memberForm" label-width="120px" size="small">
         <el-form-item label="帐号：">
@@ -132,28 +223,54 @@
         <el-form-item label="昵称：">
           <el-input v-model="member.nickname"></el-input>
         </el-form-item>
+        <el-form-item label="姓名：">
+          <el-input v-model="member.realName" :disabled="isProd"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证：">
+          <el-input v-model="member.identificationNumber" :disabled="isProd"></el-input>
+        </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group v-model="member.gender">
-            <el-radio :label="0">未知</el-radio>
-            <el-radio :label="1">男</el-radio>
-            <el-radio :label="2">女</el-radio>
+            <el-radio v-for="(item, index) in enumGender" :key="index" :label="parseInt(item.value)">{{ item.name
+            }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="手机：">
           <el-input v-model="member.phone"></el-input>
         </el-form-item>
         <el-form-item label="生日：">
-          <el-date-picker v-model="member.birthday" type="date" placeholder="选择日期">
+          <el-date-picker v-model="member.birthday" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="推荐人：">
+          <el-input v-model="member.inviterUsername" disabled></el-input>
+        </el-form-item>
         <el-form-item label="称号：">
-          <el-input v-model="member.memberLevelName" disabled></el-input>
+          <el-select v-model="member.memberLevelId" placeholder="请选择" clearable :disabled="isProd"
+            @change="setIdName(member, 'memberLevelName', enumMemberTitle, arguments[0])">
+            <el-option v-for="(item, index) in enumMemberTitle" :key="index" :label="item.name"
+              :value="parseInt(item.value)"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="站长：">
+          <el-select v-model="member.manageLevelId" placeholder="请选择" clearable :disabled="isProd"
+            @change="setIdName(member, 'manageLevelName', enumMemberMTitle, arguments[0])">
+            <el-option v-for="(item, index) in enumMemberMTitle" :key="index" :label="item.name"
+              :value="parseInt(item.value)"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="成就：">
-          <el-input v-model="member.memberHonorLevelName" disabled></el-input>
+          <el-select v-model="member.memberHonorLevelId" placeholder="请选择" clearable :disabled="isProd"
+            @change="setIdName(member, 'memberHonorLevelName', enumMemberLevel, arguments[0])">
+            <el-option v-for="(item, index) in enumMemberLevel" :key="index" :label="item.name"
+              :value="parseInt(item.value)"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="网体编号：">
+        <el-form-item label="随机编号：">
           <el-input v-model="member.teamNumber" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="团队编号：">
+          <el-input v-model="member.commonTeamNumber" disabled></el-input>
         </el-form-item>
         <el-form-item label="爱心值：">
           <el-input v-model="member.integral" disabled></el-input>
@@ -167,8 +284,11 @@
         <el-form-item label="团队值：">
           <el-input v-model="member.teamValue" disabled></el-input>
         </el-form-item>
+        <el-form-item label="荣誉值：">
+          <el-input v-model="member.memberHonorLevelValue" disabled></el-input>
+        </el-form-item>
         <el-form-item label="已购买爱心：">
-          <el-radio-group v-model="member.isBuySpecific" disabled>
+          <el-radio-group v-model="member.isBuySpecific" :disabled="isProd">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
@@ -183,6 +303,85 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :title="'详细'" :visible.sync="dialogDetailVisible">
+      <div class="detail">
+        <div class="li">
+          <div class="f">帐号：</div>
+          <div class="v">{{ member.username }}</div>
+        </div>
+        <div class="li">
+          <div class="f">昵称：</div>
+          <div class="v">{{ member.nickname }}</div>
+        </div>
+        <div class="li">
+          <div class="f">性别：</div>
+          <div class="v">{{ member.gender == 0 ? "未知" : member.gender == 1 ? "男" : "女" }}</div>
+        </div>
+        <div class="li">
+          <div class="f">手机：</div>
+          <div class="v">{{ member.phone }}</div>
+        </div>
+        <div class="li">
+          <div class="f">生日：</div>
+          <div class="v">{{ member.birthday }}</div>
+        </div>
+        <div class="li">
+          <div class="f">称号：</div>
+          <div class="v">{{ member.memberLevelName }}</div>
+        </div>
+        <div class="li">
+          <div class="f">成就：</div>
+          <div class="v">{{ member.memberHonorLevelName }}</div>
+        </div>
+        <div class="li">
+          <div class="f">帐号Id：</div>
+          <div class="v">{{ member.id }}</div>
+        </div>
+        <div class="li">
+          <div class="f">网体Id：</div>
+          <div class="v">{{ member.teamNumber }}</div>
+        </div>
+        <div class="li">
+          <div class="f">公网Id：</div>
+          <div class="v">{{ member.commonTeamNumber }}</div>
+        </div>
+        <div class="li">
+          <div class="f">推荐人：</div>
+          <div class="v">{{ member.inviterUsername }}</div>
+        </div>
+        <div class="li">
+          <div class="f">积分：</div>
+          <div class="v">{{ member.integration }}</div>
+        </div>
+        <div class="li">
+          <div class="f">爱心值：</div>
+          <div class="v">{{ member.integral }}</div>
+        </div>
+        <div class="li">
+          <div class="f">贡献值：</div>
+          <div class="v">{{ member.money }}</div>
+        </div>
+        <div class="li">
+          <div class="f">人脉值：</div>
+          <div class="v">{{ member.networkValue }}</div>
+        </div>
+        <div class="li">
+          <div class="f">团队值：</div>
+          <div class="v">{{ member.teamValue }}</div>
+        </div>
+        <div class="li">
+          <div class="f">已购买爱心：</div>
+          <div class="v">{{ member.isBuySpecific ? "是" : "否" }}</div>
+        </div>
+        <div class="li">
+          <div class="f">是否启用：</div>
+          <div class="v">{{ member.status ? "是" : "否" }}</div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDetailVisible = false" size="small">关闭</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="'编辑会员资产'" :visible.sync="dialogPropertyVisible">
@@ -202,7 +401,7 @@
         <el-form-item label="变动金额：">
           <el-input v-model="property.changeMoney" placeholder="请输入变动金额"></el-input>
         </el-form-item>
-        
+
         <el-form-item label="原因：">
           <el-input v-model="property.content"></el-input>
         </el-form-item>
@@ -262,19 +461,23 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword,updateProperty } from '@/api/member';
+import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword, updateProperty } from '@/api/member';
 import { listAll } from '@/api/mmbRole';
 import { formatDate } from '@/utils/date';
-import { enumMemberAuthStatus } from "@/utils/enums";
+import { setIdName, enumMemberRealAuthStatus, enumMemberTitle, enumGender, enumMemberMTitle, enumMemberLevel, enumYesNo, enumEnableStatus } from "@/utils/enums";
 
 const defaultListQuery = {
   pageNum: 1,
-  pageSize: 5,
+  pageSize: 20,
   username: undefined,
   nickname: undefined,
   phone: undefined,
   realName: undefined,
+  realNameStatus: undefined,
   inviterUsername: undefined,
+  memberLevelId: undefined,
+  manageLevelId: undefined,
+  isBuySpecific: undefined,
   createTime: [],
 };
 const defaultProperty = {
@@ -296,6 +499,14 @@ export default {
   name: 'memberList',
   data() {
     return {
+      enumEnableStatus,
+      enumYesNo,
+      enumMemberTitle,
+      enumGender,
+      enumMemberMTitle,
+      enumMemberLevel,
+      enumMemberRealAuthStatus,
+      isShowSearchAll: false,
       listQuery: Object.assign({}, defaultListQuery),
       list: null,
       total: null,
@@ -303,6 +514,7 @@ export default {
       dialogVisible: false,
       member: Object.assign({}, defaultMember),
       property: Object.assign({}, defaultProperty),
+      isProd: false,
       isEdit: false,
       allocDialogVisible: false,
       allocRoleIds: [],
@@ -310,6 +522,7 @@ export default {
       allocMemberId: null,
       dialogAuthVisible: false,
       dialogPropertyVisible: false,
+      dialogDetailVisible: false,
       preview: {
         isShow: false,
         src: ""
@@ -330,9 +543,10 @@ export default {
     }
   },
   methods: {
+    setIdName,
     getAuthStatus(value) {
       value = value + "";
-      const obj = enumMemberAuthStatus.find(t => t.value === value);
+      const obj = enumMemberRealAuthStatus.find(t => t.value === value);
       return obj ? obj.name : "-";
     },
     handleResetSearch() {
@@ -342,7 +556,7 @@ export default {
     handleSearchList() {
       const me = this, q = me.listQuery;
       q.pageNum = 1;
-      if (q.createTime.length) {
+      if (q.createTime && q.createTime.length) {
         q.createTimeStart = q.createTime[0];
         q.createTimeEnd = q.createTime[1];
       }
@@ -383,7 +597,7 @@ export default {
       });
     },
     handleDelete(index, row) {
-      this.$confirm('是否要删除该用户?', '提示', {
+      this.$confirm('是否要删除该会员?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -398,7 +612,6 @@ export default {
       });
     },
     handleUpdate(index, row) {
-      console.log(row);
       this.dialogVisible = true;
       this.isEdit = true;
       this.member = Object.assign({}, row);
@@ -502,6 +715,10 @@ export default {
       this.allocDialogVisible = true;
       this.getRoleListByMember(row.id);
     },
+    handleDetail(index, row) {
+      this.member = Object.assign({}, row);
+      this.dialogDetailVisible = true;
+    },
     getList() {
       this.listLoading = true;
       listInfo(this.listQuery).then(response => {
@@ -585,15 +802,70 @@ export default {
   width: 100%;
 }
 
-.search {}
+.search {
+  height: auto;
+  overflow: hidden;
+  transition: height 0.5s ease-in-out;
+}
 
->>>.search .el-form-item {
-  width: 50%;
+.search.hide {
+  height: 118px;
+}
+
+.search .title {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search>>>.el-form-item {
+  width: 400px;
   margin: 15px 0 0;
 }
 
+.search>>>.el-date-editor {
+  width: 250px;
+  padding: 3px 5px;
+}
+
+.search>>>.el-range-separator {
+  width: 20px !important;
+}
+
+
+
+
 .pagination-container {
   padding: 0 0 30px;
+}
+
+.detail {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+>>>.el-dialog .el-dialog__body {
+  padding: 15px 20px;
+}
+
+.detail .li {
+  width: 33.33%;
+  line-height: 40px;
+  display: flex;
+}
+
+.detail .li:nth-child(2n) {
+  background-color: #f1f1f1;
+}
+
+.detail .f {
+  width: 110px;
+  padding-left: 10px;
+  color: #999;
+}
+
+.detail .v {
+  width: calc(100% - 80px);
 }
 </style>
 

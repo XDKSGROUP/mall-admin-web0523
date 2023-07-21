@@ -110,7 +110,7 @@
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
         :page-size="listQuery.pageSize"
-        :page-sizes="[5,10,15]"
+        :page-sizes="[5, 10, 15, 20,50,100]"
         :current-page.sync="listQuery.pageNum"
         :total="total">
       </el-pagination>
@@ -143,7 +143,7 @@
           layout="prev, pager, next"
           :current-page.sync="dialogData.listQuery.pageNum"
           :page-size="dialogData.listQuery.pageSize"
-          :page-sizes="[5,10,15]"
+          :page-sizes="[5, 10, 15, 20,50,100]"
           :total="dialogData.total">
         </el-pagination>
       </div>
