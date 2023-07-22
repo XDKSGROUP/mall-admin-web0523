@@ -21,8 +21,8 @@
               <el-radio v-for="(it, at) in enumNotice" :key="at" :label="parseInt(it.value)">{{ it.name }}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="注册日期：">
-            <el-date-picker size="mini" v-model="listQuery.date" type="daterange" range-separator="至"
+          <el-form-item label="统计日期：">
+            <el-date-picker size="mini" v-model="listQuery.date" type="daterange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
@@ -45,8 +45,8 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="注册时间" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.addTime | formatDateTime }}</template>
+        <el-table-column label="统计日期" width="180" align="center">
+          <template slot-scope="scope">{{ scope.row.statisticsDate | formatDate }}</template>
         </el-table-column>
         <el-table-column label="新增会员数" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.newlyMemberCount }}</template>
@@ -109,12 +109,12 @@ export default {
     this.getList();
   },
   filters: {
-    formatDateTime(time) {
+    formatDate(time) {
       if (time == null || time === '') {
         return '-';
       }
       let date = new Date(time);
-      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+      return formatDate(date, 'yyyy-MM-dd')
     }
   },
   methods: {
