@@ -155,6 +155,21 @@
         <el-table-column label="姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
+        <el-table-column label="随机ID" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.teamNumber }}</template>
+        </el-table-column>
+        <el-table-column label="团队ID" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.commonTeamNumber }}</template>
+        </el-table-column>
+        <el-table-column label="称号" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
+        </el-table-column>
+        <el-table-column label="岗位" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.manageLevelName }}</template>
+        </el-table-column>
+        <el-table-column label="荣誉值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.memberHonorLevelValue }}</template>
+        </el-table-column>
         <el-table-column label="变动金额" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.changeMoney }}</template>
         </el-table-column>
