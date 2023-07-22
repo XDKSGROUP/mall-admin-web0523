@@ -48,13 +48,13 @@
         <el-table-column label="统计日期" width="180" align="center">
           <template slot-scope="scope">{{ scope.row.statisticsDate | formatDate }}</template>
         </el-table-column>
-        <el-table-column label="新增会员数" width="120" align="center">
+        <el-table-column label="新增会员数" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.newlyMemberCount }}</template>
         </el-table-column>
-        <el-table-column label="会员总数" width="350" align="center">
+        <el-table-column label="会员总数" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.memberCount }}</template>
         </el-table-column>
-        <el-table-column label="公民总数" width="120" align="center">
+        <el-table-column label="公民总数" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.level1Count }}</template>
         </el-table-column>
         <el-table-column label="志愿者总数" width="160" align="center">

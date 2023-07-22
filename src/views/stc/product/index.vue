@@ -48,7 +48,7 @@
         <el-table-column label="商品名称" width="300" align="center">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="销量" width="120" align="center">
+        <el-table-column label="销量" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.quantity }}</template>
         </el-table-column>
         
