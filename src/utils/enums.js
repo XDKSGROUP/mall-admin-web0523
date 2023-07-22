@@ -180,3 +180,8 @@ export const enumMemberLevel = [{
 }];
 
 
+export const enumMessageStatus = [{
+  name: "未读", value: "0"
+}, {
+  name: "已读", value: "1"
+}];

@@ -449,6 +449,24 @@ export const asyncRouterMap = [
         component: () => import('@/views/cms/notice/index'),
         meta: {title: '公告列表', icon: 'ums-admin'}
       },
+      {
+        path: 'message',
+        name: 'message',
+        component: () => import('@/views/cms/message/index'),
+        meta: {title: '消息列表', icon: 'ums-admin'}
+      },
+      {
+        path: 'helpCategory',
+        name: 'helpCategory',
+        component: () => import('@/views/cms/helpCategory/index'),
+        meta: {title: '帮助类别', icon: 'ums-admin'}
+      },
+      {
+        path: 'help',
+        name: 'help',
+        component: () => import('@/views/cms/help/index'),
+        meta: {title: '帮助列表', icon: 'ums-admin'}
+      },
     ]
   },
   {

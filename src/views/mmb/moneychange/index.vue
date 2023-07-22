@@ -61,6 +61,21 @@
         <el-table-column label="会员真实姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
+        <el-table-column label="随机ID" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.teamNumber }}</template>
+        </el-table-column>
+        <el-table-column label="团队ID" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.commonTeamNumber }}</template>
+        </el-table-column>
+        <el-table-column label="称号" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
+        </el-table-column>
+        <el-table-column label="岗位" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.manageLevelName }}</template>
+        </el-table-column>
+        <el-table-column label="荣誉值" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.memberHonorLevelValue }}</template>
+        </el-table-column>
         <el-table-column label="变动前金额" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.beforeMoney }}</template>
         </el-table-column>
@@ -79,8 +94,8 @@
         <el-table-column label="来源" width="180" align="center">
           <template slot-scope="scope">{{ getMoneySourceType(scope.row.source) }}</template>
         </el-table-column>
-        <el-table-column label="来源ID" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.sourceId }}</template>
+        <el-table-column label="订单编号" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.sourceNumber }}</template>
         </el-table-column>
         <el-table-column label="创建时间" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
