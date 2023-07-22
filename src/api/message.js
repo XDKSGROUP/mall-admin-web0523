@@ -16,7 +16,7 @@ export function addInfo(data) {
   })
 }
 
-export function setInfo(id, data) {
+export function setInfo(data) {
   return request({
     url: '/message/edit',
     method: 'post',

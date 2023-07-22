@@ -84,6 +84,9 @@
             <el-button size="mini" type="text" @click="handleDetail(scope.$index, scope.row)">
               详细
             </el-button>
+            <el-button size="mini" type="text" @click="handleUpdate(scope.$index, scope.row)">
+              编辑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -198,7 +201,7 @@ export default {
         intro: [
           { required: true, message: "请输入简介", trigger: 'change' }
         ],
-        content: [
+        contents: [
           { required: true, message: "请输入内容", trigger: 'change' }
         ],
         
@@ -293,6 +296,15 @@ export default {
     handleDetail(index, row) {
       this.dialogDetailVisible = true;
       this.info = Object.assign({}, row);
+    },
+    handleUpdate(index, row) {
+      const me = this;
+      me.dialogVisible = true;
+      me.isEdit = true;
+      me.info = Object.assign({}, row);
+      me.$nextTick(() => {
+        me.$refs.infoForm && me.$refs.infoForm.clearValidate();
+      })
     },
     getList() {
       this.listLoading = true;
