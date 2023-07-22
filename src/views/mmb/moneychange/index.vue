@@ -94,8 +94,8 @@
         <el-table-column label="来源" width="180" align="center">
           <template slot-scope="scope">{{ getMoneySourceType(scope.row.source) }}</template>
         </el-table-column>
-        <el-table-column label="来源ID" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.sourceId }}</template>
+        <el-table-column label="订单编号" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.sourceNumber }}</template>
         </el-table-column>
         <el-table-column label="创建时间" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.createTime | formatDateTime }}</template>
