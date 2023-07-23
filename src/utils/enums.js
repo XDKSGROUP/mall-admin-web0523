@@ -185,3 +185,9 @@ export const enumMessageStatus = [{
 }, {
   name: "已读", value: "1"
 }];
+
+export const enumShowStatus = [{
+  name: "隐藏", value: "0"
+}, {
+  name: "显示", value: "1"
+}];
