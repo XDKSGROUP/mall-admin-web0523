@@ -1,4 +1,7 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import Config from "@/utils/config";
+import { downloadExcel } from './file';
+
 export function fetchList(params) {
   return request({
     url:'/order/list',
@@ -60,4 +63,8 @@ export function updateOrderNote(params) {
     method:'post',
     params:params
   })
+}
+
+export function exportExcel(params) {
+  return downloadExcel(Config.baseApiUrl + "/order/export", params);
 }

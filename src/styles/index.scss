@@ -21,7 +21,7 @@ html {
   box-sizing: inherit;
 }
 
-div:focus{
+div:focus {
   outline: none;
 }
 
@@ -50,7 +50,7 @@ a:hover {
 }
 
 //main-container全局样式
-.app-main{
+.app-main {
   min-height: 100%
 }
 
@@ -59,14 +59,24 @@ a:hover {
 }
 
 //搜索栏样式
-.filter-container {
-
-}
+.filter-container {}
 
 //操作栏样式
 .operate-container {
-  margin-top: 20px;
+  margin-top: 10px;
 }
+
+.operate-container .el-card__body {
+  padding:10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.operate-container .title {
+  line-height: 26px;
+}
+
+.operate-container .cont {}
 
 .operate-container .btn-add {
   float: right;
@@ -155,4 +165,3 @@ a:hover {
 .color-info {
   color: #909399;
 }
-

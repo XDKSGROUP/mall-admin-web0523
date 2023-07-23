@@ -69,8 +69,14 @@
       </div>
     </el-card>
     <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
+      <div class="title">
+        <i class="el-icon-tickets"></i>
+        <span>数据列表</span>
+      </div>
+      <div class="cont">
+        <el-button size="mini" @click="handleAdd()" v-if="false" style="margin-left: 10px">添加</el-button>
+        <el-button size="mini" @click="handleExport()" style="margin-left: 10px">导出</el-button>
+      </div>
     </el-card>
     <div class="batch-operate-container">
       <el-select size="small" v-model="operateType" placeholder="批量操作">
@@ -193,7 +199,7 @@
   </div>
 </template>
 <script>
-import { fetchList, closeOrder, deleteOrder } from '@/api/order'
+import { fetchList, closeOrder, deleteOrder , exportExcel } from '@/api/order'
 import { listInfo as listChangeMoney } from '@/api/moneyChange';
 import { formatDate } from '@/utils/date';
 import { enumYesNo, enumPayType } from '@/utils/enums';
@@ -452,6 +458,10 @@ export default {
         this.changeMoneyList = response.data.list;
         this.dialogChangeMoneyVisible = true;
       });
+    },
+    handleExport() {
+      const me = this, q = me.listQuery;
+      exportExcel(q);
     },
     getList() {
       this.listLoading = true;
