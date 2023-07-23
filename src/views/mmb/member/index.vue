@@ -112,15 +112,20 @@
         </el-form>
       </div>
     </el-card>
-    <el-card v-if="false" class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+    <el-card class="operate-container" shadow="never">
+      <div class="title">
+        <i class="el-icon-tickets"></i>
+        <span>数据列表</span>
+      </div>
+      <div class="cont">
+        <el-button size="mini" @click="handleAdd()" v-if="false" style="margin-left: 10px">添加</el-button>
+        <el-button size="mini" @click="handleExport()" style="margin-left: 10px">导出</el-button>
+      </div>
     </el-card>
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20,50,100]" :total="total">
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20, 50, 100]" :total="total">
       </el-pagination>
     </div>
     <div class="table-container">
@@ -461,7 +466,7 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword, updateProperty } from '@/api/member';
+import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword, updateProperty, exportExcel } from '@/api/member';
 import { listAll } from '@/api/mmbRole';
 import { formatDate } from '@/utils/date';
 import { setIdName, enumMemberRealAuthStatus, enumMemberTitle, enumGender, enumMemberMTitle, enumMemberLevel, enumYesNo, enumEnableStatus } from "@/utils/enums";
@@ -774,6 +779,10 @@ export default {
           this.allocDialogVisible = false;
         });
       })
+    },
+    handleExport() {
+      const me = this, q = me.listQuery;
+      exportExcel(q);
     },
     previewShow(src) {
       this.preview.src = src;

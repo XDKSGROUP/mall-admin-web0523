@@ -1,4 +1,6 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import Config from "@/utils/config";
+import { downloadExcel } from './file';
 
 export function listInfo(params) {
   return request({
@@ -6,4 +8,8 @@ export function listInfo(params) {
     method: 'POST',
     data: params
   })
+}
+
+export function exportExcel(params) {
+  return downloadExcel(Config.baseApiUrl + "/member/moneyDetails/export", params);
 }

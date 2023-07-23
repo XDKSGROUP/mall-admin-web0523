@@ -1,4 +1,6 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import Config from "@/utils/config";
+import { downloadExcel } from './file';
 
 export function listInfo(params) {
   return request({
@@ -54,4 +56,8 @@ export function authAbolish(params) {
     method: 'post',
     data: params
   })
+}
+
+export function exportExcel(params) {
+  return downloadExcel(Config.baseApiUrl + "/member/transfer/export", params);
 }

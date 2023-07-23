@@ -1,17 +1,24 @@
 <template>
   <div class="app-container">
-    <el-card class="filter-container" shadow="never">
-      <div>
-        <i class="el-icon-search"></i>
-        <span>筛选搜索</span>
-        <el-button style="float:right" type="primary" @click="handleSearchList()" size="small">
-          查询
-        </el-button>
-        <el-button style="float:right;margin-right: 15px" @click="handleResetSearch()" size="small">
-          重置
-        </el-button>
+    <el-card class="search" shadow="never" :class="isShowSearchAll ? '' : 'hide'">
+      <div class="title">
+        <div class="l">
+          <i class="el-icon-search"></i>
+          <span>筛选搜索</span>
+        </div>
+        <div class="r">
+          <el-button style="" type="primary" @click="handleSearchList()" size="small">
+            查询搜索
+          </el-button>
+          <el-button style="" @click="handleResetSearch()" size="small">
+            重置
+          </el-button>
+          <el-button style="" @click="isShowSearchAll = !isShowSearchAll" size="small">
+            {{ isShowSearchAll ? "收缩" : "全部" }}
+          </el-button>
+        </div>
       </div>
-      <div class="search">
+      <div class="cont">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="编号：">
             <el-input size="mini" v-model="listQuery.number" class="input-width" placeholder="请输入" clearable></el-input>
@@ -35,19 +42,29 @@
           </el-form-item>
           <el-form-item label="充值数量：">
             <el-input-number size="mini" v-model="listQuery.moneyStart" placeholder="开始数量"
-              controls-position="right"></el-input-number> 至
+              controls-position="right" style="width:120px;"></el-input-number>
             <el-input-number size="mini" v-model="listQuery.moneyEnd" placeholder="结束数量"
-              controls-position="right"></el-input-number>
+              controls-position="right" style="width:120px;"></el-input-number>
           </el-form-item>
-
         </el-form>
       </div>
     </el-card>
-    <el-card v-if="false" class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>批量操作</span>
-      <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+    <el-card class="operate-container" shadow="never">
+      <div class="title">
+        <i class="el-icon-tickets"></i>
+        <span>数据列表</span>
+      </div>
+      <div class="cont">
+        <el-button size="mini" @click="handleAdd()" v-if="false" style="margin-left: 10px">添加</el-button>
+        <el-button size="mini" @click="handleExport()" style="margin-left: 10px">导出</el-button>
+      </div>
     </el-card>
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
+        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20, 50, 100]" :total="total">
+      </el-pagination>
+    </div>
     <div class="table-container">
       <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
         <el-table-column label="编号" width="150" align="center">
@@ -67,9 +84,9 @@
         </el-table-column>
         <el-table-column label="转账截图" width="100" align="center">
           <template slot-scope="scope">
-            <el-image style="width: 80px; height: 80px" :src="scope.row.rechargePic" @click="previewShow(scope.row.rechargePic)"
-              fit="contain"></el-image>
-            </template>
+            <el-image style="width: 80px; height: 80px" :src="scope.row.rechargePic"
+              @click="previewShow(scope.row.rechargePic)" fit="contain"></el-image>
+          </template>
         </el-table-column>
         <el-table-column label="充值状态" width="160" align="center">
           <template slot-scope="scope">{{ getRechargeStatus(scope.row.status) }}</template>
@@ -102,12 +119,6 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper" :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20,50,100]" :total="total">
-      </el-pagination>
     </div>
     <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">
       <div class="detail">
@@ -270,7 +281,7 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo, setStatus, delInfo, paySuccess, authAbolish } from '@/api/recharge';
+import { listInfo, addInfo, setInfo, setStatus, delInfo, paySuccess, authAbolish, exportExcel } from '@/api/recharge';
 import { formatDate } from '@/utils/date';
 import { enumMoneyType, enumRechargeStatus } from "@/utils/enums";
 import Tinymce from '@/components/Tinymce';
@@ -279,9 +290,9 @@ const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
   number: undefined,
-  username:undefined,
-  realName:undefined,
-  type:undefined,
+  username: undefined,
+  realName: undefined,
+  type: undefined,
   createTime: [],
   createTimeStart: undefined,
   createTimeEnd: undefined,
@@ -300,6 +311,7 @@ export default {
   data() {
     return {
       enumMoneyType,
+      isShowSearchAll: false,
       listQuery: Object.assign({}, defaultListQuery),
       category: {
         list: [],//类别列表
@@ -520,6 +532,10 @@ export default {
       }
       this.setAuthAbolish(me.info);
     },
+    handleExport() {
+      const me = this, q = me.listQuery;
+      exportExcel(q);
+    },
     getList() {
       this.listLoading = true;
       listInfo(this.listQuery).then(response => {
@@ -583,16 +599,42 @@ export default {
 
 >>>.el-form-item {
   width: 50%;
-  margin: 15px 0 0;
-}
-
->>>.el-dialog__body {
-  padding: 10px 30px;
 }
 
 .row {
   width: 100%;
 }
+
+.search {
+  height: auto;
+  overflow: hidden;
+  transition: height 0.5s ease-in-out;
+}
+
+.search.hide {
+  height: 118px;
+}
+
+.search .title {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search>>>.el-form-item {
+  width: 400px;
+  margin: 15px 0 0;
+}
+
+.search>>>.el-date-editor {
+  width: 250px;
+  padding: 3px 5px;
+}
+
+.search>>>.el-range-separator {
+  width: 20px !important;
+}
+
 
 .detail {
   width: 100%;
@@ -614,13 +656,6 @@ export default {
 
 .detail .value {
   flex: 1;
-}
-
-.search {}
-
->>>.search .el-form-item {
-  width: 50%;
-  margin: 15px 0 0;
 }
 
 .pagination-container {
