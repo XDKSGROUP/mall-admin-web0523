@@ -191,3 +191,9 @@ export const enumShowStatus = [{
 }, {
   name: "显示", value: "1"
 }];
+
+export const enumBusinessType = [{
+  name: "充值", value: "0"
+}, {
+  name: "提现", value: "1"
+}];

@@ -13,9 +13,6 @@
       </div>
       <div class="search">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="标题：">
-            <el-input size="mini" v-model="listQuery.title" class="input-width" placeholder="请输入" clearable></el-input>
-          </el-form-item>
           <el-form-item label="名称：">
             <el-input size="mini" v-model="listQuery.name" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
@@ -44,11 +41,6 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="标题" width="350" align="center">
-          <template slot-scope="scope">
-            <div style="text-align: left;">{{ scope.row.title }}</div>
-          </template>
-        </el-table-column>
         <el-table-column label="名称" width="350" align="center">
           <template slot-scope="scope">
             <div style="text-align: left;">{{ scope.row.name }}</div>
@@ -58,6 +50,15 @@
           <template slot-scope="scope">
             <div style="text-align: left;">{{ scope.row.value }}</div>
           </template>
+        </el-table-column>
+        <el-table-column label="业务类型" width="120" align="center">
+          <template slot-scope="scope">{{ getBusinessType(scope.row.businessType) }}</template>
+        </el-table-column>
+        <el-table-column label="资金类型" width="120" align="center">
+          <template slot-scope="scope">{{ getMoneyType(scope.row.moneyType) }}</template>
+        </el-table-column>
+        <el-table-column label="会员等级" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.memberLevelName }}</template>
         </el-table-column>
         <el-table-column label="备注" width="350" align="center">
           <template slot-scope="scope">
@@ -86,16 +87,20 @@
       </div>
       <div class="table-layout">
         <el-row>
-          <el-col :span="6" class="table-cell-title">标题</el-col>
-          <el-col :span="6" class="table-cell-title">名称</el-col>
-          <el-col :span="6" class="table-cell-title">值</el-col>
-          <el-col :span="6" class="table-cell-title">备注</el-col>
+          <el-col :span="4" class="table-cell-title">名称</el-col>
+          <el-col :span="4" class="table-cell-title">值</el-col>
+          <el-col :span="4" class="table-cell-title">业务类型</el-col>
+          <el-col :span="4" class="table-cell-title">资金类型</el-col>
+          <el-col :span="4" class="table-cell-title">会员等级</el-col>
+          <el-col :span="4" class="table-cell-title">备注</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell">{{ info.title }}</el-col>
-          <el-col :span="6" class="table-cell">{{ info.name }}</el-col>
-          <el-col :span="6" class="table-cell">{{ info.value }}</el-col>
-          <el-col :span="6" class="table-cell">{{ info.remark }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.name }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.value }}</el-col>
+          <el-col :span="4" class="table-cell">{{ getBusinessType(info.businessType) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ getMoneyType(info.moneyType) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.memberLevelName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.remark }}</el-col>
         </el-row>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -104,14 +109,27 @@
     </el-dialog>
     <el-dialog :title="isEdit ? '编辑' : '添加'" :visible.sync="dialogVisible">
       <el-form :model="info" ref="infoForm" :rules="infoRules" label-width="120px" size="small">
-        <el-form-item prop="title" label="标题：">
-          <el-input v-model="info.title" placeholder="请输入" :disabled="isEdit"></el-input>
-        </el-form-item>
         <el-form-item prop="name" label="名称：">
           <el-input v-model="info.name" placeholder="请输入" :disabled="isEdit"></el-input>
         </el-form-item>
         <el-form-item prop="value" label="值：">
           <el-input v-model="info.value" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item prop="businessType" label="业务类型：">
+          <el-radio-group v-model="info.businessType" :disabled="isEdit">
+            <el-radio :label="0">充值</el-radio>
+            <el-radio :label="1">提现</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="moneyType" label="资金类型：">
+          <el-radio-group v-model="info.moneyType" :disabled="isEdit">
+            <el-radio :label="0">爱心值</el-radio>
+            <el-radio :label="1">贡献值</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="memberLevelId" label="会员等级：">
+          <el-cascader :value="[info.memberLevelId]" :options="memberLevel.list" :props="{ checkStrictly: true }" clearable
+            @change="info.memberLevelId = arguments[0][0]; info.memberLevelName = memberLevel.dic[info.memberLevelId]" :disabled="isEdit"></el-cascader>
         </el-form-item>
         <el-form-item prop="remark" label="备注：">
           <el-input v-model="info.remark" placeholder="请输入"></el-input>
@@ -128,23 +146,22 @@
   </div>
 </template>
 <script>
-import { listInfo, addInfo, setInfo } from '@/api/appConfig';
+import { listInfo, addInfo, setInfo } from '@/api/strategySetting';
+import { listInfo as classListInfo } from '@/api/memberLevel';
 import { formatDate } from '@/utils/date';
-import { enumShowStatus } from "@/utils/enums";
+import { enumBusinessType,enumMoneyType } from "@/utils/enums";
 import SingleUpload from '@/components/Upload/singleUpload';
 import Tinymce from '@/components/Tinymce';
 
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 20,
-  title: undefined,
   name: undefined,
   value: undefined,
   remark: undefined,
 };
 const defaultInfo = {
   id: 0,
-  title: "",
   name: "",
   value: "",
   remark: "",
@@ -154,11 +171,12 @@ export default {
   components: { SingleUpload, Tinymce },
   data() {
     return {
-      enumShowStatus,
+      enumBusinessType,
+      enumMoneyType,
       listQuery: Object.assign({}, defaultListQuery),
-      category: {
-        list: [],//类别列表
-        dic: {},//类别字典
+      memberLevel: {
+        list: [],//会员等级列表
+        dic: {},//会员等级字典
       },
       list: null,
       total: null,
@@ -166,17 +184,20 @@ export default {
       dialogVisible: false,
       info: Object.assign({}, defaultInfo),
       infoRules: {
-        title: [
-          { required: true, message: "请输入标题", trigger: 'change' }
-        ],
         name: [
           { required: true, message: "请输入名称", trigger: 'change' }
         ],
         value: [
           { required: true, message: "请选择值", trigger: 'change' }
         ],
-        remark: [
-          { required: true, message: "请输入备注", trigger: 'change' }
+        businessType: [
+          { required: true, message: "请选择业务类型", trigger: 'change' }
+        ],
+        moneyType: [
+          { required: true, message: "请选择资金类型", trigger: 'change' }
+        ],
+        memberLevelId: [
+          { required: true, message: "请选择会员等级", trigger: 'change' }
         ],
         
 
@@ -186,6 +207,7 @@ export default {
     }
   },
   created() {
+    this.getClassList();
     this.getList();
   },
   filters: {
@@ -198,9 +220,31 @@ export default {
     }
   },
   methods: {
-    getShowStatus(value) {
+    async getClassList() {
+      debugger
+      const me = this,
+        rst = await classListInfo();
+      if (!rst.data) return;
+      const get = (lst) => {
+        return lst.map(o => {
+          me.memberLevel.dic[o.id] = o.name;
+          return {
+            label: o.name,
+            value: o.id,
+            children: o.children ? get(o.children) : undefined
+          }
+        });
+      };
+      me.memberLevel.list.push(...get(rst.data.list));
+    },
+    getBusinessType(value) {
       value = value + "";
-      const obj = enumShowStatus.find(t => t.value === value);
+      const obj = enumBusinessType.find(t => t.value === value);
+      return obj ? obj.name : "-";
+    },
+    getMoneyType(value) {
+      value = value + "";
+      const obj = enumMoneyType.find(t => t.value === value);
       return obj ? obj.name : "-";
     },
     handleResetSearch() {

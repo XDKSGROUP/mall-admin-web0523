@@ -4,7 +4,7 @@ export function listInfo(params) {
   return request({
     url:'/memberLevel/allList',
     method:'POST',
-    data:params
+    data:params||{}
   })
 }
 
