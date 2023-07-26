@@ -26,33 +26,43 @@
         </el-form>
       </div>
     </el-card>
-    <nodes v-if="isShowData" v-model="data" keyTitle="username" :current="filter.username" :level="0"
-      @select="handelSelect" @next="handelNext"></nodes>
+    <div class="tree">
+      <nodes v-if="isShowData" v-model="data" keyTitle="username" :current="filter.username" :level="0"
+        @select="handelSelect" @next="handelNext"></nodes>
+    </div>
     <el-drawer title="详细信息" :visible.sync="showDetail" direction="rtl">
       <div class="memberinfo">
         <div class="li">
-          <div class="f">编号：</div><div class="v">{{ selectItem.memberId }}</div>
+          <div class="f">编号：</div>
+          <div class="v">{{ selectItem.memberId }}</div>
         </div>
         <div class="li">
-          <div class="f">用户名：</div><div class="v">{{ selectItem.username }}</div>
+          <div class="f">用户名：</div>
+          <div class="v">{{ selectItem.username }}</div>
         </div>
         <div class="li">
-          <div class="f">电话：</div><div class="v">{{ selectItem.phone }}</div>
+          <div class="f">电话：</div>
+          <div class="v">{{ selectItem.phone }}</div>
         </div>
         <div class="li">
-          <div class="f">随机编号：</div><div class="v">{{ selectItem.teamNumber }}</div>
+          <div class="f">随机编号：</div>
+          <div class="v">{{ selectItem.teamNumber }}</div>
         </div>
         <div class="li">
-          <div class="f">团队编号：</div><div class="v">{{ selectItem.commonTeamNumber }}</div>
+          <div class="f">团队编号：</div>
+          <div class="v">{{ selectItem.commonTeamNumber }}</div>
         </div>
         <div class="li">
-          <div class="f">会员角色：</div><div class="v">{{ selectItem.memberLevelName }}</div>
+          <div class="f">会员角色：</div>
+          <div class="v">{{ selectItem.memberLevelName }}</div>
         </div>
         <div class="li">
-          <div class="f">会员等级：</div><div class="v">{{ selectItem.memberHonorLevelName }}</div>
+          <div class="f">会员等级：</div>
+          <div class="v">{{ selectItem.memberHonorLevelName }}</div>
         </div>
         <div class="li">
-          <div class="f">团队角色：</div><div class="v">{{ selectItem.manageLevelName }}</div>
+          <div class="f">团队角色：</div>
+          <div class="v">{{ selectItem.manageLevelName }}</div>
         </div>
       </div>
     </el-drawer>
@@ -150,9 +160,10 @@ export default {
       const me = this, rst = await listInfoNext(item.username);
       if (rst.code !== 200) me.$message({ type: 'error', message: rst.message });
       if (!item.children) item.children = [];
-      const dic = {};
-      item.children.forEach(t => dic[t.binaryStorage] = t);
-      rst.data.forEach(t => dic[t.binaryStorage] || (item.children.push(t)));
+      rst.data.forEach(t => {
+        t.isChild = t.pointMemberCount ? true : false;
+        item.children.push(t);
+      });
     },
     async handleSearchList() {
       this.loadData();
@@ -176,6 +187,13 @@ export default {
 <style scoped>
 .container {
   width: 100%;
+}
+
+.container .tree {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
 
 .search {
@@ -228,18 +246,21 @@ export default {
 
 .memberinfo .li {
   width: 100%;
-  line-height:30px;
-  padding:2px 20px;
+  line-height: 30px;
+  padding: 2px 20px;
   text-align: left;
   display: flex;
 }
-.memberinfo .li:nth-child(2n){
+
+.memberinfo .li:nth-child(2n) {
   background-color: #eee;
 }
+
 .memberinfo .f {
   width: 120px;
   text-align: left;
 }
+
 .memberinfo .v {
   text-align: left;
 }
