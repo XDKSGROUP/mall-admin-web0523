@@ -377,6 +377,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/ums/appConfig/index'),
         meta: {title: '配置列表', icon: 'ums-admin'}
       },
+      {
+        path: 'strategySetting',
+        name: 'strategySetting',
+        component: () => import('@/views/ums/strategySetting/index'),
+        meta: {title: '会员策略列表', icon: 'ums-admin'}
+      },
     ]
   },
   {
