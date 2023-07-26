@@ -72,6 +72,9 @@
         <el-table-column label="今日爱心订单总额" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.todaySpecificPayAmount }}</template>
         </el-table-column>
+        <el-table-column label="今日分红总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.todayBonusAmount }}</template>
+        </el-table-column>
         <el-table-column label="">
         </el-table-column>
       </el-table>
