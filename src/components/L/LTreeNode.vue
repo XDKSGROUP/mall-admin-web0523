@@ -1,7 +1,8 @@
 <template>
     <div class="ltreenode">
         <div class="li" v-for="(item, index) in children" :key="index">
-            <div :class="index == 0 ? 'linel' : index == max ? 'liner' : 'line'" v-if="level != 0">
+            <div :class="index == 0 ? children.length == 1 ? 'linelx' : 'linel' : index == max ? 'liner' : 'line'" v-if="level
+                != 0">
                 <div class="line"></div>
             </div>
             <div class="title" :class="item[keyTitle] == current ? 'current' : ''">
@@ -121,6 +122,19 @@ export default {
 }
 
 .linel>.line {
+    width: 1px;
+    height: 5px;
+    margin-right: auto;
+    background-color: #000;
+}
+
+.linelx {
+    width: 50%;
+    height: 1px;
+    margin-left: 50%;
+}
+
+.linelx>.line {
     width: 1px;
     height: 5px;
     margin-right: auto;

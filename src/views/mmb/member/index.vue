@@ -244,8 +244,7 @@
           <el-input v-model="member.phone"></el-input>
         </el-form-item>
         <el-form-item label="生日：">
-          <el-date-picker v-model="member.birthday" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择">
-          </el-date-picker>
+          <LDate v-model="member.birthday" type="date" :isUpdate="dialogVisible" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择"></LDate>
         </el-form-item>
         <el-form-item label="推荐人：">
           <el-input v-model="member.inviterUsername" disabled></el-input>
@@ -468,7 +467,7 @@
 <script>
 import { listInfo, addInfo, setInfo, setStatus, delInfo, getRoleByMember, setRole, resetLoginPassword, resetPaymentPassword, updateProperty, exportExcel } from '@/api/member';
 import { listAll } from '@/api/mmbRole';
-import { formatDate } from '@/utils/date';
+import { formatDate, str2Date } from '@/utils/date';
 import { setIdName, enumMemberRealAuthStatus, enumMemberTitle, enumGender, enumMemberMTitle, enumMemberLevel, enumYesNo, enumEnableStatus } from "@/utils/enums";
 
 const defaultListQuery = {
@@ -577,9 +576,9 @@ export default {
       this.getList();
     },
     handleAdd() {
-      this.dialogVisible = true;
       this.isEdit = false;
       this.member = Object.assign({}, defaultMember);
+      this.dialogVisible = true;
     },
     handleStatusChange(index, row) {
       this.$confirm('是否要修改该状态?', '提示', {
@@ -617,9 +616,9 @@ export default {
       });
     },
     handleUpdate(index, row) {
-      this.dialogVisible = true;
       this.isEdit = true;
-      this.member = Object.assign({}, row);
+      this.member=Object.assign({}, row);
+      this.dialogVisible = true;
     },
     handleUpdateProperty(index, row) {
       this.dialogPropertyVisible = true;
@@ -687,6 +686,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        me.member.birthday=me.member.birthday+" 00:00:00";
         setInfo(me.member.id, me.member).then(response => {
           me.$message({
             message: '审核成功！',

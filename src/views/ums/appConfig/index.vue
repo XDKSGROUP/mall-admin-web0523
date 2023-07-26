@@ -175,11 +175,6 @@ export default {
         value: [
           { required: true, message: "请选择值", trigger: 'change' }
         ],
-        remark: [
-          { required: true, message: "请输入备注", trigger: 'change' }
-        ],
-        
-
       },
       isEdit: false,
       dialogDetailVisible: false,
