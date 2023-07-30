@@ -1,5 +1,6 @@
 {
-  "name": "mall-admin-web",
+  "name": "mall-admin-app",
+  "main": "./src/run.js",
   "version": "1.0.0",
   "description": "mall后台管理前端",
   "author": "macro",
@@ -7,7 +8,7 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "electron ."
   },
   "dependencies": {
     "axios": "^0.18.0",
