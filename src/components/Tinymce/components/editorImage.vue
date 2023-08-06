@@ -108,7 +108,7 @@
             _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
             _self.dataObj.key = response.data.dir + '/${filename}';
             _self.dataObj.dir = response.data.dir;
-            _self.dataObj.host = response.data.host;
+            _self.dataObj.host = _self.ossUploadUrl = response.data.host;
             _self.listObj[fileName] = {hasSuccess: false, uid: file.uid, width: this.width, height: this.height};
             resolve(true)
           }).catch(err => {

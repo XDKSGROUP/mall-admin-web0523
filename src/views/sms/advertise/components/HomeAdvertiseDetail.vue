@@ -11,10 +11,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="开始时间：" prop="startTime">
-        <el-date-picker type="datetime" placeholder="选择日期" v-model="homeAdvertise.startTime"></el-date-picker>
+        <el-date-picker type="datetime" placeholder="选择日期" v-model="homeAdvertise.startTime" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
       </el-form-item>
       <el-form-item label="到期时间：" prop="endTime">
-        <el-date-picker type="datetime" placeholder="选择日期" v-model="homeAdvertise.endTime"></el-date-picker>
+        <el-date-picker type="datetime" placeholder="选择日期" v-model="homeAdvertise.endTime" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
       </el-form-item>
       <el-form-item label="上线/下线：">
         <el-radio-group v-model="homeAdvertise.status">
