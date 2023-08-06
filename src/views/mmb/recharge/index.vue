@@ -91,6 +91,12 @@
         <el-table-column label="充值状态" width="160" align="center">
           <template slot-scope="scope">{{ getRechargeStatus(scope.row.status) }}</template>
         </el-table-column>
+        <el-table-column label="操作人" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.confirmorUsername }}</template>
+        </el-table-column>
+        <el-table-column label="操作时间" width="120" align="center">
+          <template slot-scope="scope">{{ scope.row.confirmTime }}</template>
+        </el-table-column>
         <el-table-column label="作废原因" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.abolishReason }}</template>
         </el-table-column>
