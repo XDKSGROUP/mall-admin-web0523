@@ -168,6 +168,28 @@
         <el-table-column label="贡献值订单总数" width="160" align="center">
           <template slot-scope="scope">{{ scope.row.moneyOrderCount }}</template>
         </el-table-column>
+        <el-table-column label="贡献值订单总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.moneyOrderTotal }}</template>
+        </el-table-column>
+        <el-table-column label="今日贡献值订单总数" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.todayMoneyOrderCount }}</template>
+        </el-table-column>
+        <el-table-column label="今日贡献值订单总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.todayMoneyOrderTotal }}</template>
+        </el-table-column>
+
+        <el-table-column label="后台充值总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.integralManageTotal }}</template>
+        </el-table-column>
+        <el-table-column label="今日后台充值总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.todayIntegralManageTotal }}</template>
+        </el-table-column>
+        <el-table-column label="后台扣除总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.moneyManageTotal }}</template>
+        </el-table-column>
+        <el-table-column label="今日后台扣除总额" width="160" align="center">
+          <template slot-scope="scope">{{ scope.row.todayMoneyManageTotal }}</template>
+        </el-table-column>
       </el-table>
     </div>
   </div>

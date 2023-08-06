@@ -70,6 +70,22 @@
           <el-col :span="4" class="overview-item-title">申请总数</el-col>
           <el-col :span="4" class="overview-item-title">申请总额</el-col>
         </el-row>
+        <el-row>
+          <el-col :span="4" class="color-danger overview-item-value">{{ assets.todayIntegralManageTotal }}</el-col>
+          <el-col :span="4" class="color-danger overview-item-value">{{ assets.integralManageTotal }}</el-col>
+          <el-col :span="4" class="color-danger overview-item-value">{{ assets.todayMoneyManageTotal }}</el-col>
+          <el-col :span="4" class="color-danger overview-item-value">{{ assets.moneyManageTotal }}</el-col>
+          <el-col :span="4" class="color-danger overview-item-value"></el-col>
+          <el-col :span="4" class="color-danger overview-item-value"></el-col>
+        </el-row>
+        <el-row class="font-medium">
+          <el-col :span="4" class="overview-item-title">今日后台充值总额</el-col>
+          <el-col :span="4" class="overview-item-title">后台充值总额</el-col>
+          <el-col :span="4" class="overview-item-title">今日后台扣除总额</el-col>
+          <el-col :span="4" class="overview-item-title">后台扣除总额</el-col>
+          <el-col :span="4" class="overview-item-title"></el-col>
+          <el-col :span="4" class="overview-item-title"></el-col>
+        </el-row>
       </div>
     </div>
 
