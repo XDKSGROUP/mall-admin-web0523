@@ -244,7 +244,8 @@
           <el-input v-model="member.phone"></el-input>
         </el-form-item>
         <el-form-item label="生日：">
-          <LDate v-model="member.birthday" type="date" :isUpdate="dialogVisible" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择"></LDate>
+          <LDate v-model="member.birthday" type="date" :isUpdate="dialogVisible" value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择"></LDate>
         </el-form-item>
         <el-form-item label="推荐人：">
           <el-input v-model="member.inviterUsername" disabled></el-input>
@@ -617,7 +618,7 @@ export default {
     },
     handleUpdate(index, row) {
       this.isEdit = true;
-      this.member=Object.assign({}, row);
+      this.member = Object.assign({}, row);
       this.dialogVisible = true;
     },
     handleUpdateProperty(index, row) {
@@ -635,7 +636,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if (this.isEdit) {
-          if(typeof(this.member.birthday)!="string")this.member.birthday=this.member.birthday.toLocaleString().replace(/\//g,"-");
+          if (this.member.birthday && typeof (this.member.birthday) != "string") this.member.birthday = this.member.birthday.toLocaleString().replace(/\//g, "-");
           setInfo(this.member.id, this.member).then(response => {
             this.$message({
               message: '修改成功！',
@@ -687,7 +688,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        me.member.birthday=me.member.birthday+" 00:00:00";
+        me.member.birthday = me.member.birthday + " 00:00:00";
         setInfo(me.member.id, me.member).then(response => {
           me.$message({
             message: '审核成功！',
