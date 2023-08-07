@@ -635,6 +635,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if (this.isEdit) {
+          if(typeof(this.member.birthday)!="string")this.member.birthday=this.member.birthday.toLocaleString().replace(/\//g,"-");
           setInfo(this.member.id, this.member).then(response => {
             this.$message({
               message: '修改成功！',
