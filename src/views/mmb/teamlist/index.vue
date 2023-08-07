@@ -64,6 +64,18 @@
           <div class="f">团队角色：</div>
           <div class="v">{{ selectItem.manageLevelName }}</div>
         </div>
+        <div class="li">
+          <div class="f">直推人账户：</div>
+          <div class="v">{{ selectItem.inviterUsername==null?"无": selectItem.inviterUsername }}</div>
+        </div>
+        <div class="li">
+          <div class="f">人脉值：</div>
+          <div class="v">{{ selectItem.networkValue }}</div>
+        </div>
+        <div class="li">
+          <div class="f">团队值：</div>
+          <div class="v">{{ selectItem.teamValue }}</div>
+        </div>
       </div>
     </el-drawer>
   </div>
