@@ -73,7 +73,7 @@
         <el-table-column label="帐号" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.username }}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="120" align="center">
+        <el-table-column label="真实姓名" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.realName }}</template>
         </el-table-column>
         <el-table-column label="资金类型" width="80" align="center">
@@ -135,75 +135,99 @@
       </el-table>
     </div>
     <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">
-      <div class="detail">
-        <div class="li">
-          <div class="label">会员用户名</div>
-          <div class="value">{{ info.username }}</div>
-        </div>
-        <div class="li">
-          <div class="label">会员真实姓名</div>
-          <div class="value">{{ info.realName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">资金类型</div>
-          <div class="value">{{ getMoneyType(info.type) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">申请金额</div>
-          <div class="value">{{ info.applyMoney }}</div>
-        </div>
-        <div class="li">
-          <div class="label">实际金额</div>
-          <div class="value">{{ info.actualMoney }}</div>
-        </div>
-        <div class="li">
-          <div class="label">手续费</div>
-          <div class="value">{{ info.handlingFee }}</div>
-        </div>
-        <div class="li">
-          <div class="label">银行名称</div>
-          <div class="value">{{ info.bankName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">支行名称</div>
-          <div class="value">{{ info.branchName }}</div>
-        </div>
-        <div class="li">
-          <div class="label">银行卡号</div>
-          <div class="value">{{ info.bankCardNumber }}</div>
-        </div>
-        <div class="li">
-          <div class="label">持卡人</div>
-          <div class="value">{{ info.cardholder }}</div>
-        </div>
-        <div class="li">
-          <div class="label">申请时间</div>
-          <div class="value">{{ info.applyTime }}</div>
-        </div>
-        <div class="li">
-          <div class="label">提现状态</div>
-          <div class="value">{{ getWithdrawalsStatus(info.status) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核状态</div>
-          <div class="value">{{ getAuthStatus(info.auditStatus) }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核时间</div>
-          <div class="value">{{ info.auditTime || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">审核失败原因</div>
-          <div class="value">{{ info.auditReason || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">打款时间</div>
-          <div class="value">{{ info.paymentTime || "-" }}</div>
-        </div>
-        <div class="li">
-          <div class="label">作废时间</div>
-          <div class="value">{{ info.abolishTime || "-" }}</div>
-        </div>
+      <div style="margin-top: 20px">
+        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <span class="font-small">基本信息</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">提现编号</el-col>
+          <el-col :span="4" class="table-cell-title">会员账号</el-col>
+          <el-col :span="4" class="table-cell-title">真实姓名</el-col>
+          <el-col :span="4" class="table-cell-title">资金类型</el-col>
+          <el-col :span="4" class="table-cell-title">申请时间</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ info.number }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.username }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.realName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ getMoneyType(info.type) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.applyTime }}</el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">提现银行名称</el-col>
+          <el-col :span="4" class="table-cell-title">提现支行名称</el-col>
+          <el-col :span="4" class="table-cell-title">提现银行卡号</el-col>
+          <el-col :span="4" class="table-cell-title">持卡人</el-col>
+          <el-col :span="8" class="table-cell-title">备注</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ info.bankName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.branchName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.bankCardNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.cardholder }}</el-col>
+          <el-col :span="8" class="table-cell">{{ info.remark || "-" }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">提现状态</el-col>
+          <el-col :span="4" class="table-cell-title">申请金额</el-col>
+          <el-col :span="4" class="table-cell-title">实际金额</el-col>
+          <el-col :span="4" class="table-cell-title">手续费</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ getWithdrawalsStatus(info.status) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.applyMoney }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.actualMoney }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.handlingFee }}</el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+        </el-row>
+      </div>
+      <div style="margin-top: 20px">
+        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <span class="font-small">审核信息</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">审核状态</el-col>
+          <el-col :span="4" class="table-cell-title">审核人账号</el-col>
+          <el-col :span="4" class="table-cell-title">审核人昵称</el-col>
+          <el-col :span="4" class="table-cell-title">审核时间</el-col>
+          <el-col :span="8" class="table-cell-title">审核失败原因</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ getAuthStatus(info.auditStatus) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.auditorUsername || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.auditorNickName || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.auditTime || "-" }}</el-col>
+          <el-col :span="8" class="table-cell">{{ info.auditReason || "-" }}</el-col>
+        </el-row>
+      </div>
+      <div style="margin-top: 20px">
+        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <span class="font-small">打款信息</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">打款人账号</el-col>
+          <el-col :span="4" class="table-cell-title">打款人昵称</el-col>
+          <el-col :span="4" class="table-cell-title">打款时间</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ info.paymenterUsername || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.paymenterNickName || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ info.paymentTime || "-" }}</el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+        </el-row>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailVisible = false" size="small">确 定</el-button>
@@ -616,30 +640,36 @@ export default {
   width: 20px !important;
 }
 
-.detail {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.detail .li {
-  width: 50%;
-  line-height: 30px;
-  display: flex;
-}
-
-.detail .label {
-  width: 120px;
-  padding-right: 20px;
-  text-align: right;
-}
-
-.detail .value {
-  flex: 1;
-}
-
 .pagination-container {
   padding: 0 0 30px;
+}
+
+.table-layout {
+  margin-top: 20px;
+  border-left: 1px solid #DCDFE6;
+  border-top: 1px solid #DCDFE6;
+}
+
+.table-cell {
+  height: 60px;
+  line-height: 40px;
+  border-right: 1px solid #DCDFE6;
+  border-bottom: 1px solid #DCDFE6;
+  padding: 10px;
+  font-size: 14px;
+  color: #606266;
+  text-align: center;
+  overflow: hidden;
+}
+
+.table-cell-title {
+  border-right: 1px solid #DCDFE6;
+  border-bottom: 1px solid #DCDFE6;
+  padding: 10px;
+  background: #F2F6FC;
+  text-align: center;
+  font-size: 14px;
+  color: #303133;
 }
 
 </style>
