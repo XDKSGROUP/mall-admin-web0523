@@ -130,6 +130,9 @@
     </div>
     <div class="table-container">
       <el-table ref="memberTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
+        <el-table-column label="头像" width="120" align="center">
+          <template slot-scope="scope"><img style="height: 80px" :src="scope.row.icon"></template>
+        </el-table-column>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
@@ -310,85 +313,131 @@
         <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="'详细'" :visible.sync="dialogDetailVisible">
-      <div class="detail">
-        <div class="li">
-          <div class="f">帐号：</div>
-          <div class="v">{{ member.username }}</div>
-        </div>
-        <div class="li">
-          <div class="f">昵称：</div>
-          <div class="v">{{ member.nickname }}</div>
-        </div>
-        <div class="li">
-          <div class="f">性别：</div>
-          <div class="v">{{ member.gender == 0 ? "未知" : member.gender == 1 ? "男" : "女" }}</div>
-        </div>
-        <div class="li">
-          <div class="f">手机：</div>
-          <div class="v">{{ member.phone }}</div>
-        </div>
-        <div class="li">
-          <div class="f">生日：</div>
-          <div class="v">{{ member.birthday }}</div>
-        </div>
-        <div class="li">
-          <div class="f">称号：</div>
-          <div class="v">{{ member.memberLevelName }}</div>
-        </div>
-        <div class="li">
-          <div class="f">成就：</div>
-          <div class="v">{{ member.memberHonorLevelName }}</div>
-        </div>
-        <div class="li">
-          <div class="f">帐号Id：</div>
-          <div class="v">{{ member.id }}</div>
-        </div>
-        <div class="li">
-          <div class="f">网体Id：</div>
-          <div class="v">{{ member.teamNumber }}</div>
-        </div>
-        <div class="li">
-          <div class="f">公网Id：</div>
-          <div class="v">{{ member.commonTeamNumber }}</div>
-        </div>
-        <div class="li">
-          <div class="f">推荐人：</div>
-          <div class="v">{{ member.inviterUsername }}</div>
-        </div>
-        <div class="li">
-          <div class="f">积分：</div>
-          <div class="v">{{ member.integration }}</div>
-        </div>
-        <div class="li">
-          <div class="f">爱心值：</div>
-          <div class="v">{{ member.integral }}</div>
-        </div>
-        <div class="li">
-          <div class="f">贡献值：</div>
-          <div class="v">{{ member.money }}</div>
-        </div>
-        <div class="li">
-          <div class="f">人脉值：</div>
-          <div class="v">{{ member.networkValue }}</div>
-        </div>
-        <div class="li">
-          <div class="f">团队值：</div>
-          <div class="v">{{ member.teamValue }}</div>
-        </div>
-        <div class="li">
-          <div class="f">已购买爱心：</div>
-          <div class="v">{{ member.isBuySpecific ? "是" : "否" }}</div>
-        </div>
-        <div class="li">
-          <div class="f">是否启用：</div>
-          <div class="v">{{ member.status ? "是" : "否" }}</div>
-        </div>
+    <el-dialog title="详细信息" :visible.sync="dialogDetailVisible">
+      <div style="margin-top: 20px">
+        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <span class="font-small">基本信息</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">用户名</el-col>
+          <el-col :span="4" class="table-cell-title">昵称</el-col>
+          <el-col :span="4" class="table-cell-title">手机号码</el-col>
+          <el-col :span="4" class="table-cell-title">会员等级名称</el-col>
+          <el-col :span="4" class="table-cell-title">荣誉等级名称</el-col>
+          <el-col :span="4" class="table-cell-title">会员荣誉值</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ member.username }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.nickname }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.phone }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.memberLevelName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.memberHonorLevelName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.memberHonorLevelValue }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">启用状态</el-col>
+          <el-col :span="4" class="table-cell-title">注册时间</el-col>
+          <el-col :span="4" class="table-cell-title">性别</el-col>
+          <el-col :span="4" class="table-cell-title">生日</el-col>
+          <el-col :span="4" class="table-cell-title">所在城市</el-col>
+          <el-col :span="4" class="table-cell-title">职业</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ getEnableStatus(member.status) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.createTime }}</el-col>
+          <el-col :span="4" class="table-cell">{{ getGender(member.gender) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.birthday }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.city }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.job }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">个性签名</el-col>
+          <el-col :span="4" class="table-cell-title">头像</el-col>
+          <el-col :span="4" class="table-cell-title">积分</el-col>
+          <el-col :span="4" class="table-cell-title">成长值</el-col>
+          <el-col :span="4" class="table-cell-title">邀请人id</el-col>
+          <el-col :span="4" class="table-cell-title">邀请人账号</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ member.personalizedSignature }}</el-col>
+          <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.icon"></el-col>
+          <el-col :span="4" class="table-cell">{{ member.integration }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.growth }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviterId }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviterUsername }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">爱心值</el-col>
+          <el-col :span="4" class="table-cell-title">贡献值</el-col>
+          <el-col :span="4" class="table-cell-title">人脉值</el-col>
+          <el-col :span="4" class="table-cell-title">有效人脉值</el-col>
+          <el-col :span="4" class="table-cell-title">团队值</el-col>
+          <el-col :span="4" class="table-cell-title">公益成就</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ member.integral }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.money }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.networkValue }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.effectiveNetworkValue }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.teamValue }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.publicWelfareAchievement }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">是否购买爱心商品</el-col>
+          <el-col :span="4" class="table-cell-title">实名状态</el-col>
+          <el-col :span="4" class="table-cell-title">身份证正面</el-col>
+          <el-col :span="4" class="table-cell-title">身份证背面</el-col>
+          <el-col :span="4" class="table-cell-title">真实姓名</el-col>
+          <el-col :span="4" class="table-cell-title">身份证号码</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ getYesNo(member.isBuySpecific) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ getRealAuthStatus(member.realNameStatus) }}</el-col>
+          <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.idCardFront"></el-col>
+          <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.idCardBack"></el-col>
+          <el-col :span="4" class="table-cell">{{ member.realName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.identificationNumber }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">认证通过时间</el-col>
+          <el-col :span="4" class="table-cell-title">驳回原因</el-col>
+          <el-col :span="4" class="table-cell-title">驳回时间</el-col>
+          <el-col :span="4" class="table-cell-title">申请时间</el-col>
+          <el-col :span="4" class="table-cell-title">网体编号</el-col>
+          <el-col :span="4" class="table-cell-title">退休时间</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ member.certificationPassTime }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationRejectReason }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationRejectTime }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationApplyTime }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.teamNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.retireTime }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">公网编号</el-col>
+          <el-col :span="4" class="table-cell-title">岗位等级名称</el-col>
+          <el-col :span="4" class="table-cell-title">邀请路径</el-col>
+          <el-col :span="4" class="table-cell-title">邀请层级</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+          <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ member.commonTeamNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.manageLevelName }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.invitePath }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviteLevel }}</el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+          <el-col :span="4" class="table-cell"></el-col>
+        </el-row>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogDetailVisible = false" size="small">关闭</el-button>
+        <el-button @click="dialogDetailVisible = false" size="small">确 定</el-button>
       </span>
     </el-dialog>
+
+    
     <el-dialog :title="'编辑会员资产'" :visible.sync="dialogPropertyVisible">
       <el-form :model="property" ref="memberForm" label-width="120px" size="small">
         <el-form-item label="资产：">
@@ -552,6 +601,26 @@ export default {
     getAuthStatus(value) {
       value = value + "";
       const obj = enumMemberRealAuthStatus.find(t => t.value === value);
+      return obj ? obj.name : "-";
+    },
+    getGender(value) {
+      value = value + "";
+      const obj = enumGender.find(t => t.value === value);
+      return obj ? obj.name : "-";
+    },
+    getYesNo(value) {
+      value = value + "";
+      const obj = enumYesNo.find(t => t.value === value);
+      return obj ? obj.name : "-";
+    },
+    getRealAuthStatus(value) {
+      value = value + "";
+      const obj = enumMemberRealAuthStatus.find(t => t.value === value);
+      return obj ? obj.name : "-";
+    },
+    getEnableStatus(value) {
+      value = value + "";
+      const obj = enumEnableStatus.find(t => t.value === value);
       return obj ? obj.name : "-";
     },
     handleResetSearch() {
@@ -859,24 +928,32 @@ export default {
   padding: 15px 20px;
 }
 
-.detail .li {
-  width: 33.33%;
-  line-height: 40px;
-  display: flex;
+.table-layout {
+  margin-top: 20px;
+  border-left: 1px solid #DCDFE6;
+  border-top: 1px solid #DCDFE6;
 }
 
-.detail .li:nth-child(2n) {
-  background-color: #f1f1f1;
+.table-cell {
+  height: 100px;
+  line-height: 80px;
+  border-right: 1px solid #DCDFE6;
+  border-bottom: 1px solid #DCDFE6;
+  padding: 10px;
+  font-size: 14px;
+  color: #606266;
+  text-align: center;
+  overflow: hidden;
 }
 
-.detail .f {
-  width: 110px;
-  padding-left: 10px;
-  color: #999;
-}
-
-.detail .v {
-  width: calc(100% - 80px);
+.table-cell-title {
+  border-right: 1px solid #DCDFE6;
+  border-bottom: 1px solid #DCDFE6;
+  padding: 10px;
+  background: #F2F6FC;
+  text-align: center;
+  font-size: 14px;
+  color: #303133;
 }
 </style>
 
