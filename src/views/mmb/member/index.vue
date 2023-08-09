@@ -329,8 +329,8 @@
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell">{{ member.username }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.nickname }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.phone }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.nickname || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.phone || "-" }}</el-col>
           <el-col :span="4" class="table-cell">{{ member.memberLevelName }}</el-col>
           <el-col :span="4" class="table-cell">{{ member.memberHonorLevelName }}</el-col>
           <el-col :span="4" class="table-cell">{{ member.memberHonorLevelValue }}</el-col>
@@ -347,9 +347,9 @@
           <el-col :span="4" class="table-cell">{{ getEnableStatus(member.status) }}</el-col>
           <el-col :span="4" class="table-cell">{{ member.createTime }}</el-col>
           <el-col :span="4" class="table-cell">{{ getGender(member.gender) }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.birthday }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.city }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.job }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.birthday || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.city || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.job || "-" }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell-title">个性签名</el-col>
@@ -360,12 +360,12 @@
           <el-col :span="4" class="table-cell-title">邀请人账号</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell">{{ member.personalizedSignature }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.personalizedSignature || "-" }}</el-col>
           <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.icon"></el-col>
           <el-col :span="4" class="table-cell">{{ member.integration }}</el-col>
           <el-col :span="4" class="table-cell">{{ member.growth }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.inviterId }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.inviterUsername }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviterId || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviterUsername || "-" }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell-title">爱心值</el-col>
@@ -396,8 +396,8 @@
           <el-col :span="4" class="table-cell">{{ getRealAuthStatus(member.realNameStatus) }}</el-col>
           <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.idCardFront"></el-col>
           <el-col :span="4" class="table-cell"><img style="height: 80px" :src="member.idCardBack"></el-col>
-          <el-col :span="4" class="table-cell">{{ member.realName }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.identificationNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.realName || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.identificationNumber || "-" }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell-title">认证通过时间</el-col>
@@ -408,12 +408,12 @@
           <el-col :span="4" class="table-cell-title">退休时间</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell">{{ member.certificationPassTime }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.certificationRejectReason }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.certificationRejectTime }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.certificationApplyTime }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.teamNumber }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.retireTime }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationPassTime || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationRejectReason || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationRejectTime || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.certificationApplyTime || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.teamNumber || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.retireTime || "-" }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell-title">公网编号</el-col>
@@ -424,10 +424,10 @@
           <el-col :span="4" class="table-cell-title">&nbsp;</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell">{{ member.commonTeamNumber }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.manageLevelName }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.invitePath }}</el-col>
-          <el-col :span="4" class="table-cell">{{ member.inviteLevel }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.commonTeamNumber || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.manageLevelName || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.invitePath || "-" }}</el-col>
+          <el-col :span="4" class="table-cell">{{ member.inviteLevel || "-" }}</el-col>
           <el-col :span="4" class="table-cell"></el-col>
           <el-col :span="4" class="table-cell"></el-col>
         </el-row>
