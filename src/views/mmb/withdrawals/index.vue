@@ -41,10 +41,10 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="申请数量：">
-            <el-input-number size="mini" v-model="listQuery.moneyStart" placeholder="开始数量"
-              controls-position="right" style="width:120px;"></el-input-number>
-            <el-input-number size="mini" v-model="listQuery.moneyEnd" placeholder="结束数量"
-              controls-position="right" style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.moneyStart" placeholder="开始数量" controls-position="right"
+              style="width:120px;"></el-input-number>
+            <el-input-number size="mini" v-model="listQuery.moneyEnd" placeholder="结束数量" controls-position="right"
+              style="width:120px;"></el-input-number>
           </el-form-item>
         </el-form>
       </div>
@@ -55,6 +55,8 @@
         <span>数据列表</span>
       </div>
       <div class="cont">
+        <el-button size="mini" @click="handleAuth()" style="margin-left: 10px">批量审核</el-button>
+        <el-button size="mini" @click="setPaySuccess()" style="margin-left: 10px">批量打款</el-button>
         <el-button size="mini" @click="handleAdd()" v-if="false" style="margin-left: 10px">添加</el-button>
         <el-button size="mini" @click="handleExport()" style="margin-left: 10px">导出</el-button>
       </div>
@@ -66,7 +68,9 @@
       </el-pagination>
     </div>
     <div class="table-container">
-      <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
+      <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border
+        @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="140" align="center">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
@@ -124,11 +128,6 @@
             <el-button v-if="scope.row.status === 0 && scope.row.auditStatus === 1" size="mini" type="text"
               @click="setPaySuccess(scope.row)">
               打款
-            </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="setAuthAbolish(scope.row)">
-              作废
-            </el-button>
-            <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -352,6 +351,7 @@ export default {
       allocMemberId: null,
       dialogAuthVisible: false,
       dialogDetailVisible: false,
+      multipleSelection: [],
     }
   },
   created() {
@@ -367,6 +367,10 @@ export default {
     }
   },
   methods: {
+    handleSelectionChange(val) {
+      console.log(val)
+      this.multipleSelection = val;
+    },
     getMoneyType(value) {
       value = value + "";
       const obj = enumMoneyType.find(t => t.value === value);
@@ -519,7 +523,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        authSuccess(me.info).then(response => {
+        const prms = { id: me.info.id ? [me.info.id] : me.multipleSelection.map(t => t.id) };
+        authSuccess(prms).then(response => {
           me.$message({
             message: '审核通过',
             type: 'success'
@@ -543,7 +548,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        authReject(me.info).then(response => {
+        const prms =Object.assign(me.info, { id: me.info.id ? [me.info.id] : me.multipleSelection.map(t => t.id) });
+        authReject(prms).then(response => {
           me.$message({
             message: '驳回完成',
             type: 'success'
@@ -553,14 +559,15 @@ export default {
         })
       })
     },
-    setPaySuccess(row) {
+    setPaySuccess(info) {
       const me = this;
       me.$confirm('确认已打款吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        paySuccess(row).then(response => {
+      }).then(() => { 
+        const prms =Object.assign(info||{}, { id: info&&info.id ? [info.id] : me.multipleSelection.map(t => t.id) });
+        paySuccess(prms).then(response => {
           me.$message({
             message: '已打款完成',
             type: 'success'
@@ -671,7 +678,6 @@ export default {
   font-size: 14px;
   color: #303133;
 }
-
 </style>
 
 

@@ -411,36 +411,6 @@ export const asyncRouterMap = [
         meta: { title: '会员等级列表', icon: 'ums-admin' }
       },
       {
-        path: 'recharge',
-        name: 'recharge',
-        component: () => import('@/views/mmb/recharge/index'),
-        meta: { title: '爱心值购买', icon: 'ums-admin' }
-      },
-      {
-        path: 'movelist',
-        name: 'movelist',
-        component: () => import('@/views/mmb/movelist/index'),
-        meta: { title: '传递列表', icon: 'ums-admin' }
-      },
-      {
-        path: 'withdrawals',
-        name: 'withdrawals',
-        component: () => import('@/views/mmb/withdrawals/index'),
-        meta: { title: '提现列表', icon: 'ums-admin' }
-      },
-      {
-        path: 'moneychange',
-        name: 'moneychange',
-        component: () => import('@/views/mmb/moneychange/index'),
-        meta: { title: '资金变动明细', icon: 'ums-admin' }
-      },
-      {
-        path: 'banklist',
-        name: 'banklist',
-        component: () => import('@/views/mmb/banklist/index'),
-        meta: { title: '银行卡列表', icon: 'ums-admin' }
-      },
-      {
         path: 'teamlist',
         name: 'teamlist',
         component: () => import('@/views/mmb/teamlist/index'),
@@ -517,6 +487,45 @@ export const asyncRouterMap = [
         name: 'product',
         component: () => import('@/views/stc/product/index'),
         meta: { title: '商品', icon: 'product-list' }
+      },
+    ]
+  },
+  {
+    path: '/fas',
+    component: Layout,
+    redirect: '/fas/recharge',
+    name: 'fas',
+    meta: { title: '财务', icon: 'sms-coupon' },
+    children: [
+      {
+        path: 'recharge',
+        name: 'recharge',
+        component: () => import('@/views/mmb/recharge/index'),
+        meta: { title: '爱心值购买', icon: 'ums-admin' }
+      },
+      {
+        path: 'movelist',
+        name: 'movelist',
+        component: () => import('@/views/mmb/movelist/index'),
+        meta: { title: '传递列表', icon: 'ums-admin' }
+      },
+      {
+        path: 'withdrawals',
+        name: 'withdrawals',
+        component: () => import('@/views/mmb/withdrawals/index'),
+        meta: { title: '提现列表', icon: 'ums-admin' }
+      },
+      {
+        path: 'moneychange',
+        name: 'moneychange',
+        component: () => import('@/views/mmb/moneychange/index'),
+        meta: { title: '资金变动明细', icon: 'ums-admin' }
+      },
+      {
+        path: 'banklist',
+        name: 'banklist',
+        component: () => import('@/views/mmb/banklist/index'),
+        meta: { title: '银行卡列表', icon: 'ums-admin' }
       },
     ]
   },
