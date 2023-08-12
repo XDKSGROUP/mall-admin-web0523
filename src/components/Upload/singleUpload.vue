@@ -13,6 +13,7 @@
 </template>
 <script>
 import { policy } from '@/api/oss'
+import { formatDate } from '@/utils/date'
 
 export default {
   name: 'singleUpload',
@@ -59,6 +60,7 @@ export default {
       useOss: true, //使用oss->true;使用MinIO->false
       ossUploadUrl: 'http://pinganwh.oss-cn-hangzhou.aliyuncs.com',
       minioUploadUrl: 'http://localhost:8080/minio/upload',
+      ts: undefined,
     };
   },
   methods: {
@@ -71,6 +73,10 @@ export default {
     handlePreview(file) {
       this.dialogVisible = true;
     },
+    updateTs() {
+      this.ts = formatDate(new Date(), "yyyyMMddhhmmss" + Math.round(
+        Math.random() * 100000));
+    },
     beforeUpload(file) {
       let _self = this;
       if (!this.useOss) {
@@ -78,11 +84,12 @@ export default {
         return true;
       }
       return new Promise((resolve, reject) => {
+        _self.updateTs();
         policy().then(response => {
           _self.dataObj.policy = response.data.policy;
           _self.dataObj.signature = response.data.signature;
           _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
-          _self.dataObj.key = response.data.dir + '/${filename}';
+          _self.dataObj.key = response.data.dir + '/' + _self.ts + '${filename}';
           _self.dataObj.dir = response.data.dir;
           _self.dataObj.host = _self.ossUploadUrl = response.data.host;
           // _self.dataObj.callback = response.data.callback;
@@ -96,7 +103,7 @@ export default {
     handleUploadSuccess(res, file) {
       this.showFileList = true;
       this.fileList.pop();
-      let url = this.dataObj.host + '/' + this.dataObj.dir + '/' + file.name;
+      let url = this.dataObj.host + '/' + this.dataObj.dir + '/' + this.ts + file.name;
       if (!this.useOss) {
         //不使用oss直接获取图片路径
         url = res.data.url;
