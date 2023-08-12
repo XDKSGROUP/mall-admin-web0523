@@ -7,7 +7,7 @@
           <el-cascader v-model="selectProductCateValue" :options="productCateOptions" v-if="hideCategoryId">
           </el-cascader>
         </el-form-item>
-        <el-form-item label="是否特殊商品：" prop="isSpecific" label-width="160px">
+        <el-form-item label="是否爱心购买订单：" prop="isSpecific" label-width="160px">
           <el-radio-group v-model="value.isSpecific">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
