@@ -49,7 +49,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="购买爱心：">
+          <el-form-item label="已购买爱心订单：">
             <el-select v-model="listQuery.isSpecific" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in enumYesNo" :key="index" :label="item.name"
                 :value="parseInt(item.value)"></el-option>

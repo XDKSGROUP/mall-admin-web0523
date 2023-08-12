@@ -50,7 +50,7 @@
                 :value="parseInt(item.value)"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="购买爱心：">
+          <el-form-item label="已购买爱心订单：">
             <el-select v-model="listQuery.isBuySpecific" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in enumYesNo" :key="index" :label="item.name"
                 :value="parseInt(item.value)"></el-option>
@@ -295,7 +295,7 @@
         <el-form-item label="荣誉值：">
           <el-input v-model="member.memberHonorLevelValue" disabled></el-input>
         </el-form-item>
-        <el-form-item label="已购买爱心：">
+        <el-form-item label="已购买爱心订单：">
           <el-radio-group v-model="member.isBuySpecific" :disabled="isProd">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
