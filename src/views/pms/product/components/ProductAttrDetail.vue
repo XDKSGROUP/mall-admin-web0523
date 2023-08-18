@@ -430,12 +430,16 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          debugger
+          console.log(this.value.skuStockList)
           if(this.value.skuStockList!==null&&this.value.skuStockList.length>0){
             let tempSkuList = [];
             tempSkuList = tempSkuList.concat(tempSkuList,this.value.skuStockList);
-            let price=this.value.skuStockList[0].price;
+            let price = this.value.skuStockList[0].price;
+            let promotionPrice=this.value.skuStockList[0].promotionPrice;
             for(let i=0;i<tempSkuList.length;i++){
-              tempSkuList[i].price=price;
+              tempSkuList[i].price = price;
+              tempSkuList[i].promotionPrice=promotionPrice;
             }
             this.value.skuStockList=[];
             this.value.skuStockList=this.value.skuStockList.concat(this.value.skuStockList,tempSkuList);
@@ -463,6 +467,7 @@
         });
       },
       refreshProductSkuList() {
+        debugger
         this.value.skuStockList = [];
         let skuList = this.value.skuStockList;
         //只有一个属性时
@@ -470,7 +475,17 @@
           let attr = this.selectProductAttr[0];
           for (let i = 0; i < attr.values.length; i++) {
             skuList.push({
-              spData: JSON.stringify([{key:attr.name,value:attr.values[i]}])
+              id: null,
+              lockStock: null,
+              lowStock: null,
+              pic: null,
+              price: null,
+              productId: null,
+              promotionPrice: null,
+              sale: null,
+              skuCode: null,
+              spData: JSON.stringify([{key:attr.name,value:attr.values[i]}]),
+              stock: null
             });
           }
         } else if (this.selectProductAttr.length === 2) {
@@ -479,7 +494,17 @@
           for (let i = 0; i < attr0.values.length; i++) {
             if (attr1.values.length === 0) {
               skuList.push({
-                spData: JSON.stringify([{key:attr0.name,value:attr0.values[i]}])
+                id: null,
+                lockStock: null,
+                lowStock: null,
+                pic: null,
+                price: null,
+                productId: null,
+                promotionPrice: null,
+                sale: null,
+                skuCode: null,
+                spData: JSON.stringify([{ key: attr0.name, value: attr0.values[i] }]),
+                stock: null
               });
               continue;
             }
@@ -488,7 +513,17 @@
               spData.push({key:attr0.name,value:attr0.values[i]});
               spData.push({key:attr1.name,value:attr1.values[j]});
               skuList.push({
-                spData: JSON.stringify(spData)
+                id: null,
+                lockStock: null,
+                lowStock: null,
+                pic: null,
+                price: null,
+                productId: null,
+                promotionPrice: null,
+                sale: null,
+                skuCode: null,
+                spData: JSON.stringify(spData),
+                stock: null
               });
             }
           }
@@ -499,7 +534,17 @@
           for (let i = 0; i < attr0.values.length; i++) {
             if (attr1.values.length === 0) {
               skuList.push({
-                spData: JSON.stringify([{key:attr0.name,value:attr0.values[i]}])
+                id: null,
+                lockStock: null,
+                lowStock: null,
+                pic: null,
+                price: null,
+                productId: null,
+                promotionPrice: null,
+                sale: null,
+                skuCode: null,
+                spData: JSON.stringify([{key:attr0.name,value:attr0.values[i]}]),
+                stock: null
               });
               continue;
             }
@@ -509,7 +554,17 @@
                 spData.push({key:attr0.name,value:attr0.values[i]});
                 spData.push({key:attr1.name,value:attr1.values[j]});
                 skuList.push({
-                  spData: JSON.stringify(spData)
+                  id: null,
+                  lockStock: null,
+                  lowStock: null,
+                  pic: null,
+                  price: null,
+                  productId: null,
+                  promotionPrice: null,
+                  sale: null,
+                  skuCode: null,
+                  spData: JSON.stringify(spData),
+                  stock: null
                 });
                 continue;
               }
@@ -519,7 +574,17 @@
                 spData.push({key:attr1.name,value:attr1.values[j]});
                 spData.push({key:attr2.name,value:attr2.values[k]});
                 skuList.push({
-                  spData: JSON.stringify(spData)
+                  id: null,
+                  lockStock: null,
+                  lowStock: null,
+                  pic: null,
+                  price: null,
+                  productId: null,
+                  promotionPrice: null,
+                  sale: null,
+                  skuCode: null,
+                  spData: JSON.stringify(spData),
+                  stock: null
                 });
               }
             }
