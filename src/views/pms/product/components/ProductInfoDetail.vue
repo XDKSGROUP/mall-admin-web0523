@@ -114,9 +114,12 @@ export default {
       if (newValue != null && newValue.length === 2) {
         this.value.productCategoryId = newValue[1];
         this.value.productCategoryName = this.getCateNameById(this.value.productCategoryId);
+        console.log(this.value.productCategoryId)
+        this.value.isSpecific=this.value.productCategoryId==59?1:0;
       } else {
         this.value.productCategoryId = null;
         this.value.productCategoryName = null;
+        this.value.isSpecific=null;
       }
     }
   },

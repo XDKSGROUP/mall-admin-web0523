@@ -178,10 +178,10 @@
 </script>
 <style>
   .form-container {
-    width: 960px;
+    width: auto;
   }
   .form-inner-container {
-    width: 800px;
+    width: auto;
   }
 </style>
 
