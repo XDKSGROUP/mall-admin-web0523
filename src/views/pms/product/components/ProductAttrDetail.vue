@@ -10,7 +10,8 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="skuStockList" :rules="[{ required: true, message: '请填写商品规格', trigger: 'change' }]" label="商品规格：">
+      <el-form-item prop="skuStockList" :rules="[{ required: true, message: '请填写商品规格', trigger: 'change' }]"
+        label="商品规格：">
         <el-card shadow="never" class="cardBg">
           <div v-for="(productAttr, idx) in selectProductAttr" :key="idx">
             {{ productAttr.name }}：
@@ -48,12 +49,12 @@
               <el-input v-model="scope.row.promotionPrice"></el-input>
             </template>
           </el-table-column>
-          <el-table-column label="商品库存" width="80" align="center">
+          <el-table-column label="商品库存" width="110" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.stock"></el-input>
             </template>
           </el-table-column>
-          <el-table-column label="库存预警值" width="80" align="center">
+          <el-table-column label="库存预警值" width="110" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.lowStock"></el-input>
             </template>
@@ -77,7 +78,7 @@
         <el-button type="primary" style="margin-top: 20px" @click="handleSyncProductSkuStock">同步库存
         </el-button>
       </el-form-item>
-      <el-form-item label="属性图片：" v-if="hasAttrPic">
+      <el-form-item prop="skuStockList" :rules="[{ required: true, message: '请上传属性图片', trigger: 'change' }]" label="属性图片：" v-if="hasAttrPic">
         <el-card shadow="never" class="cardBg">
           <div v-for="(item, index) in selectProductAttrPics" :key="index">
             <span>{{ item.name }}:</span>
@@ -86,7 +87,7 @@
           </div>
         </el-card>
       </el-form-item>
-      <el-form-item label="商品参数：">
+      <el-form-item prop="productAttributeValueList" :rules="[{ required: true, message: '请填写商品参数', trigger: 'change' }]" label="商品参数：">
         <el-card shadow="never" class="cardBg">
           <div v-for="(item, index) in selectProductParam" :class="{ littleMarginTop: index !== 0 }" :key="index">
             <div class="paramInputLabel">{{ item.name }}:</div>
@@ -104,10 +105,10 @@
       <el-form-item label="商品详情：">
         <el-tabs v-model="activeHtmlName" type="card">
           <el-tab-pane label="移动端详情" name="mobile">
-            <tinymce :width="595" :height="300" v-model="value.detailMobileHtml"></tinymce>
+            <tinymce :height="300" v-model="value.detailMobileHtml"></tinymce>
           </el-tab-pane>
           <el-tab-pane label="电脑端详情" name="pc">
-            <tinymce :width="595" :height="300" v-model="value.detailHtml"></tinymce>
+            <tinymce :height="300" v-model="value.detailHtml"></tinymce>
           </el-tab-pane>
         </el-tabs>
       </el-form-item>
@@ -383,26 +384,26 @@ export default {
         this.refreshProductSkuList();
       });
     },
-    handleSyncProductSkuPrice(){
-        this.$confirm('将同步第一个sku的价格到所有sku,是否继续', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          if(this.value.skuStockList!==null&&this.value.skuStockList.length>0){
-            let tempSkuList = [];
-            tempSkuList = tempSkuList.concat(tempSkuList,this.value.skuStockList);
-            let price = this.value.skuStockList[0].price;
-            let promotionPrice=this.value.skuStockList[0].promotionPrice;
-            for(let i=0;i<tempSkuList.length;i++){
-              tempSkuList[i].price = price;
-              tempSkuList[i].promotionPrice=promotionPrice;
-            }
-            this.value.skuStockList=[];
-            this.value.skuStockList=this.value.skuStockList.concat(this.value.skuStockList,tempSkuList);
+    handleSyncProductSkuPrice() {
+      this.$confirm('将同步第一个sku的价格到所有sku,是否继续', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.value.skuStockList !== null && this.value.skuStockList.length > 0) {
+          let tempSkuList = [];
+          tempSkuList = tempSkuList.concat(tempSkuList, this.value.skuStockList);
+          let price = this.value.skuStockList[0].price;
+          let promotionPrice = this.value.skuStockList[0].promotionPrice;
+          for (let i = 0; i < tempSkuList.length; i++) {
+            tempSkuList[i].price = price;
+            tempSkuList[i].promotionPrice = promotionPrice;
           }
-        });
-      },
+          this.value.skuStockList = [];
+          this.value.skuStockList = this.value.skuStockList.concat(this.value.skuStockList, tempSkuList);
+        }
+      });
+    },
     handleSyncProductSkuStock() {
       this.$confirm('将同步第一个sku的库存到所有sku,是否继续', '提示', {
         confirmButtonText: '确定',
@@ -628,14 +629,15 @@ export default {
     },
     handleNext() {
       const me = this;
+      me.mergeProductAttrValue();
+      me.mergeProductAttrPics();
       me.$refs.productAttrForm.validate(function (ok) {
         if (!ok) return;
-        me.mergeProductAttrValue();
         if (!me.value.skuStockList.length) {
           me.msg("请选择商品规格并刷新列表");
           return;
         }
-        console.log(me.value.skuStockList);
+        // console.log(me.value.skuStockList);
         for (let i = 0, c = me.value.skuStockList.length; i < c; i++) {
           const it = me.value.skuStockList[i];
           const arr = it.spData ? JSON.parse(it.spData) : [];
@@ -664,8 +666,20 @@ export default {
             me.msg("请填写" + name + "SKU编码");
             return;
           }
+          if (!it.pic) {
+            me.msg("请上传" + name + "图片属性");
+            return;
+          }
         }
-        me.mergeProductAttrPics();
+        // console.log(me.value.productAttributeValueList);
+        for(let i = 0, c = me.value.productAttributeValueList.length; i < c; i++) {
+          const it = me.value.productAttributeValueList[i];
+          if (!it.value) {
+            me.msg("请填写所有的商品参数");
+            return;
+          }
+
+        }
         me.$emit('nextStep')
       });
     },

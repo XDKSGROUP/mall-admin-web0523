@@ -101,7 +101,10 @@
     unit: '',
     usePointLimit: 0,
     verifyStatus: 0,
-    weight: 0
+    weight: 0,
+    
+    attrPicsX:null,
+    attrPrmsX:null,
   };
   export default {
     name: 'ProductDetail',
