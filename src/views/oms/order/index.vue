@@ -94,51 +94,76 @@
         :page-size="listQuery.pageSize" :page-sizes="[5, 10, 15, 20, 50, 100]" :total="total">
       </el-pagination>
     </div>
-    <div class="table-container">
-      <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="handleSelectionChange"
-        v-loading="listLoading" border>
-        <el-table-column type="selection" width="60" align="center"></el-table-column>
-        <el-table-column label="编号" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
-        </el-table-column>
-        <el-table-column label="订单编号" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.orderSn }}</template>
-        </el-table-column>
-        <el-table-column label="提交时间" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.createTime | formatCreateTime }}</template>
-        </el-table-column>
-        <el-table-column label="用户账号" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.memberUsername }}</template>
-        </el-table-column>
-        <el-table-column label="订单金额" width="120" align="center">
-          <template slot-scope="scope">￥{{ scope.row.totalAmount }}</template>
-        </el-table-column>
-        <el-table-column label="支付方式" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.payType | formatPayType }}</template>
-        </el-table-column>
-        <el-table-column label="订单来源" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.sourceType | formatSourceType }}</template>
-        </el-table-column>
-        <el-table-column label="订单状态" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.status | formatStatus }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
-          <template slot-scope="scope">
-            <div class="opts">
-              <el-button size="mini" @click="handleViewOrder(scope.$index, scope.row)">查看订单</el-button>
-              <el-button size="mini" @click="handleChangeMoneyList(scope.row)">查看分红</el-button>
-              <el-button size="mini" @click="handleCloseOrder(scope.$index, scope.row)"
-                v-show="scope.row.status === 0">关闭订单</el-button>
-              <el-button size="mini" @click="handleDeliveryOrder(scope.$index, scope.row)"
-                v-show="scope.row.status === 1">订单发货</el-button>
-              <el-button size="mini" @click="handleViewLogistics(scope.$index, scope.row)"
-                v-show="scope.row.status === 2 || scope.row.status === 3">订单跟踪</el-button>
-              <el-button size="mini" type="danger" @click="handleDeleteOrder(scope.$index, scope.row)"
-                v-show="scope.row.status === 4">删除订单</el-button>
+    <div class="table-container tableex">
+      <div class="columns">
+        <div class="c1">订单信息</div>
+        <div class="c2">实付金额</div>
+        <div class="c3">操作</div>
+      </div>
+
+      <div class="item" v-for="(it, at) in list" :key="at">
+        <div class="title">
+          <div class="dt">
+            {{ it.createTime | formatCreateTime }}
+          </div>
+          <div class="orderno">
+            订单号: {{it.orderSn}}({{it.memberUsername}})
+          </div>
+          <div class="name">
+            会员编号({{it.memberId}})
+          </div>
+          <div class="tags">
+            <div class="tag1" v-if="it.deliverySn">快递单号：{{ it.deliverySn }}</div>
+            <div class="tag2">{{it.status | formatStatus}}</div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="goods">
+            <div class="li" v-for="(itp,atp) in it.itemList" :key="atp">
+              <div class="img">
+                <img :src="itp.productPic" />
+              </div>
+              <div class="prms">
+                <div class="tt">{{itp.productName}} {{itp.realAmount}}元/件</div>
+                <div class="tp"></div>
+              </div>
+              <div class="price">
+                <div class="money">小计: {{ itp.realAmount*itp.productQuantity }}元</div>
+                <div class="num">数量: X {{itp.productQuantity}}</div>
+              </div>
             </div>
-          </template>
-        </el-table-column>
-      </el-table>
+          </div>
+          <div class="amount">
+            <div class="money">￥{{it.totalAmount}}</div>
+            <div class="freight">(含运费￥{{ it.freightAmount }})</div>
+            <div class="paymethod">{{it.payType | formatPayType}}</div>
+          </div>
+          <div class="operate">
+            <el-button size="mini" @click="handleViewOrder(at, it)">查看订单</el-button>
+            <el-button size="mini" @click="handleChangeMoneyList(it)">查看分红</el-button>
+            <el-button size="mini" @click="handleCloseOrder(at, it)" v-show="it.status === 0">关闭订单</el-button>
+            <el-button size="mini" @click="handleDeliveryOrder(at, it)" v-show="it.status === 1">订单发货</el-button>
+            <el-button size="mini" @click="handleViewLogistics(at, it)"
+              v-show="it.status === 2 || it.status === 3">订单跟踪</el-button>
+            <el-button size="mini" type="danger" @click="handleDeleteOrder(at, it)"
+              v-show="it.status === 4">删除订单</el-button>
+          </div>
+        </div>
+        <div class="contact">
+          <div class="name">
+            收货人: {{it.receiverName}}
+          </div>
+          <div class="tel">
+            电话: {{it.receiverPhone}}
+          </div>
+          <div class="address">
+            地址: {{it.receiverProvince}} {{it.receiverCity}} {{it.receiverRegion}}
+          </div>
+          <div class="type">
+            {{it.delivery_company}}
+          </div>
+        </div>
+      </div>
     </div>
     <el-dialog title="关闭订单" :visible.sync="closeOrder.dialogVisible" width="30%">
       <span style="vertical-align: top">操作备注：</span>
@@ -199,7 +224,7 @@
   </div>
 </template>
 <script>
-import { fetchList, closeOrder, deleteOrder , exportExcel } from '@/api/order'
+import { fetchList, closeOrder, deleteOrder, exportExcel } from '@/api/order'
 import { listInfo as listChangeMoney } from '@/api/moneyChange';
 import { formatDate } from '@/utils/date';
 import { enumYesNo, enumPayType } from '@/utils/enums';
@@ -566,6 +591,102 @@ export default {
 .opts>button {
   margin: 5px 5px 5px 0;
 }
+
+.tableex .columns {
+  line-height: 40px;
+  color: #333;
+  font-size: 14px;
+  border-radius: 5px;
+  background: #eee;
+  text-align: center;
+  display: flex;
+}
+
+.columns .c1 {
+  width: 55%;
+}
+
+.columns .c2 {
+  width: 20%;
+}
+
+.columns .c2 {
+  width: 25%;
+}
+
+.tableex .item {
+  margin-top: 15px;
+  font-size: 14px;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+}
+
+.item .title {
+  padding: 10px;
+  background: #eee;
+  display: flex;
+}
+.item .title>div {
+  padding: 0 5px;
+}
+
+.item .title .tags {
+  display: flex;
+}
+
+.item .info {
+  padding: 10px;
+  border-top: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item .info .goods{
+  width:55%;
+}
+.item .goods .li{
+  width:80%;
+  padding:0 3% 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item .goods .li:nth-child(2n+1){
+  background: #fafafa;
+  border-radius: 10px;
+}
+.item .goods .li:last-child{
+  padding-bottom: 0;
+}
+.item .goods .img{
+  width:80px;
+  display: block;
+}
+.item .goods img{
+  width:100%;
+}
+.item .info .amount{
+  width:20%;
+}
+.item .info .operate{
+  width:25%;
+}
+.item .operate button{
+  margin:0 5px 8px 0;
+}
+.item .contact {
+  padding: 10px;
+  background: #eee;
+  display: flex;
+}
+
+.item .contact div {
+  padding: 0 5px;
+}
+
 </style>
 
 

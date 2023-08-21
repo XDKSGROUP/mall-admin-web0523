@@ -7,7 +7,7 @@
           <el-cascader v-model="selectProductCateValue" :options="productCateOptions" v-if="hideCategoryId">
           </el-cascader>
         </el-form-item>
-        <el-form-item label="是否爱心购买订单：" prop="isSpecific" label-width="160px">
+        <el-form-item v-show="false" label="是否爱心购买订单：" prop="isSpecific" label-width="160px">
           <el-radio-group v-model="value.isSpecific">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
@@ -114,12 +114,11 @@ export default {
       if (newValue != null && newValue.length === 2) {
         this.value.productCategoryId = newValue[1];
         this.value.productCategoryName = this.getCateNameById(this.value.productCategoryId);
-        console.log(this.value.productCategoryId)
-        this.value.isSpecific=this.value.productCategoryId==59?1:0;
+        this.value.isSpecific = this.value.isSpecific == undefined ? this.value.productCategoryId == 59 ? 1 : 0 : this.value.isSpecific;
       } else {
         this.value.productCategoryId = null;
         this.value.productCategoryName = null;
-        this.value.isSpecific=null;
+        this.value.isSpecific = null;
       }
     }
   },
@@ -146,9 +145,9 @@ export default {
         }
         me.productCateOptions.push({ label: list[i].name, value: list[i].id, children: children });
       }
-      setTimeout(function(){
+      setTimeout(function () {
         me.hideCategoryId = true;
-      },500);
+      }, 500);
     },
     getBrandList() {
       fetchBrandList({ pageNum: 1, pageSize: 100 }).then(response => {
