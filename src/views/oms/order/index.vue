@@ -75,9 +75,15 @@
       </div>
       <div class="cont">
         <el-button size="mini" @click="handleAdd()" v-if="false" style="margin-left: 10px">添加</el-button>
+        <el-button size="mini" @click="handleImport()" style="margin-left: 10px">发货导入</el-button>
         <el-button size="mini" @click="handleExport()" style="margin-left: 10px">导出</el-button>
       </div>
     </el-card>
+    <div class="tabs">
+      <div class="li" v-for="(item, at) in statusOptions" :key="at" @click="handleSearchList(item.value)"
+        :class="{ s: item.value == listQuery.status }">{{ item.label }}
+      </div>
+    </div>
     <div class="batch-operate-container">
       <el-select size="small" v-model="operateType" placeholder="批量操作">
         <el-option v-for="item in operateOptions" :key="item.value" :label="item.label" :value="item.value">
@@ -107,40 +113,45 @@
             {{ it.createTime | formatCreateTime }}
           </div>
           <div class="orderno">
-            订单号: {{it.orderSn}}({{it.memberUsername}})
+            订单号: {{ it.orderSn }}({{ it.memberUsername }})
           </div>
           <div class="name">
-            会员编号({{it.memberId}})
+            会员编号({{ it.memberId }})
           </div>
           <div class="tags">
+            <div class="tag2">支付时间：{{ it.paymentTime | formatCreateTime }}</div>
+            <div class="tag2">{{ it.status | formatStatus }}</div>
             <div class="tag1" v-if="it.deliverySn">快递单号：{{ it.deliverySn }}</div>
-            <div class="tag2">{{it.status | formatStatus}}</div>
           </div>
         </div>
         <div class="info">
           <div class="goods">
-            <div class="li" v-for="(itp,atp) in it.itemList" :key="atp">
+            <div class="li" v-for="(itp, atp) in it.itemList" :key="atp">
               <div class="img">
                 <img :src="itp.productPic" />
               </div>
               <div class="prms">
-                <div class="tt">{{itp.productName}} {{itp.realAmount}}元/件</div>
-                <div class="tp"></div>
+                <div class="tt">{{ itp.productName }} {{ itp.realAmount }}元/件</div>
+                <div class="tp">
+                  <div v-for="(ita, ata) in (itp.productAttr && JSON.parse(itp.productAttr) || [])" :key="ata">
+                    {{ ita.key }}:{{ ita.value }}
+                  </div>
+                </div>
               </div>
               <div class="price">
-                <div class="money">小计: {{ itp.realAmount*itp.productQuantity }}元</div>
-                <div class="num">数量: X {{itp.productQuantity}}</div>
+                <div class="money">小计: {{ itp.realAmount * itp.productQuantity }}元</div>
+                <div class="num">数量: X {{ itp.productQuantity }}</div>
               </div>
             </div>
           </div>
           <div class="amount">
-            <div class="money">￥{{it.totalAmount}}</div>
+            <div class="money">￥{{ it.totalAmount }}</div>
             <div class="freight">(含运费￥{{ it.freightAmount }})</div>
-            <div class="paymethod">{{it.payType | formatPayType}}</div>
+            <div class="paymethod">{{ it.payType | formatPayType }}</div>
           </div>
           <div class="operate">
             <el-button size="mini" @click="handleViewOrder(at, it)">查看订单</el-button>
-            <el-button size="mini" @click="handleChangeMoneyList(it)">查看分红</el-button>
+            <el-button size="mini" @click="handleChangeMoneyList(it)" v-if="it.isSpecific">查看分红</el-button>
             <el-button size="mini" @click="handleCloseOrder(at, it)" v-show="it.status === 0">关闭订单</el-button>
             <el-button size="mini" @click="handleDeliveryOrder(at, it)" v-show="it.status === 1">订单发货</el-button>
             <el-button size="mini" @click="handleViewLogistics(at, it)"
@@ -151,16 +162,16 @@
         </div>
         <div class="contact">
           <div class="name">
-            收货人: {{it.receiverName}}
+            收货人: {{ it.receiverName }}
           </div>
           <div class="tel">
-            电话: {{it.receiverPhone}}
+            电话: {{ it.receiverPhone }}
           </div>
           <div class="address">
-            地址: {{it.receiverProvince}} {{it.receiverCity}} {{it.receiverRegion}}
+            地址: {{ it.receiverProvince }} {{ it.receiverCity }} {{ it.receiverRegion }} {{ it.receiverDetailAddress }}
           </div>
           <div class="type">
-            {{it.delivery_company}}
+            {{ it.delivery_company }}
           </div>
         </div>
       </div>
@@ -221,6 +232,8 @@
         <el-button @click="dialogChangeMoneyVisible = false">关闭</el-button>
       </span>
     </el-dialog>
+    <LImport v-model="showImport" title="发货导入" url="/order/importBat" durl="/static/files/发货模板.xlsx"
+      @success="handleImportSuccess"></LImport>
   </div>
 </template>
 <script>
@@ -230,6 +243,7 @@ import { formatDate } from '@/utils/date';
 import { enumYesNo, enumPayType } from '@/utils/enums';
 import { fetchListWithChildren } from '@/api/productCate'
 import LogisticsDialog from '@/views/oms/order/components/logisticsDialog';
+import LImport from '@/components/l/LImportXlsx.vue'
 
 const defaultListQuery = {
   pageNum: 1,
@@ -246,7 +260,7 @@ const defaultListQuery = {
 };
 export default {
   name: "orderList",
-  components: { LogisticsDialog },
+  components: { LogisticsDialog, LImport },
   data() {
     return {
       enumYesNo,
@@ -326,6 +340,8 @@ export default {
       classAllIds: [],
       classIds: [],
       changeMoneyList: [],
+
+      showImport: false,
     }
   },
   created() {
@@ -369,9 +385,10 @@ export default {
     handleResetSearch() {
       this.listQuery = Object.assign({}, defaultListQuery);
     },
-    handleSearchList() {
+    handleSearchList(status) {
       const me = this, q = me.listQuery;
       q.pageNum = 1;
+      q.status = status;
       if (q.createTimex && q.createTimex.length) {
         q.createTimeStart = q.createTimex[0];
         q.createTimeEnd = q.createTimex[1];
@@ -488,6 +505,12 @@ export default {
       const me = this, q = me.listQuery;
       exportExcel(q);
     },
+    handleImport() {
+      this.showImport = true;
+    },
+    handleImportSuccess() {
+
+    },
     getList() {
       this.listLoading = true;
       fetchList(this.listQuery).then(response => {
@@ -592,6 +615,27 @@ export default {
   margin: 5px 5px 5px 0;
 }
 
+.tabs {
+  margin: 20px 0 0;
+  border-bottom: 1px solid #409EFF;
+  display: flex;
+}
+
+.tabs .li {
+  padding: 8px 20px 6px;
+  margin: 0 10px;
+  background: #eee;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  cursor: pointer;
+}
+
+.tabs .s {
+  color: #fff;
+  background: #409EFF;
+}
+
+
 .tableex .columns {
   line-height: 40px;
   color: #333;
@@ -608,6 +652,7 @@ export default {
 
 .columns .c2 {
   width: 20%;
+  text-align: left;
 }
 
 .columns .c2 {
@@ -626,12 +671,17 @@ export default {
   background: #eee;
   display: flex;
 }
+
 .item .title>div {
   padding: 0 5px;
 }
 
 .item .title .tags {
   display: flex;
+}
+
+.item .tags div {
+  padding: 0 5px;
 }
 
 .item .info {
@@ -643,40 +693,63 @@ export default {
   align-items: center;
 }
 
-.item .info .goods{
-  width:55%;
+.item .info .goods {
+  width: 55%;
 }
-.item .goods .li{
-  width:80%;
-  padding:0 3% 10px;
+
+.item .goods .li {
+  padding: 0 3% 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.item .goods .li:nth-child(2n+1){
+.item .goods .li:nth-child(2n+1) {
   background: #fafafa;
   border-radius: 10px;
 }
-.item .goods .li:last-child{
+
+.item .goods .li:last-child {
   padding-bottom: 0;
 }
-.item .goods .img{
-  width:80px;
+
+.item .goods .img {
+  width: 80px;
+  margin-right: 20px;
   display: block;
+  flex: 0 0 80px;
 }
-.item .goods img{
-  width:100%;
+
+.item .goods img {
+  width: 100%;
 }
-.item .info .amount{
-  width:20%;
+
+.item .goods .prms {
+  flex: 1;
 }
-.item .info .operate{
-  width:25%;
+
+.item .goods .price {
+  width: 30%;
+  min-width: 120px;
+  margin-left: 20px;
 }
-.item .operate button{
-  margin:0 5px 8px 0;
+
+.item .info {
+  line-height: 24px;
 }
+
+.item .info .amount {
+  width: 20%;
+}
+
+.item .info .operate {
+  width: 25%;
+}
+
+.item .operate button {
+  margin: 0 5px 8px 0;
+}
+
 .item .contact {
   padding: 10px;
   background: #eee;
@@ -686,7 +759,6 @@ export default {
 .item .contact div {
   padding: 0 5px;
 }
-
 </style>
 
 
