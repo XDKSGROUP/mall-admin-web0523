@@ -63,13 +63,10 @@ export default {
             this.$emit("isShow", false);
         },
         handleUploadSuccess(res, file) {
-            let msg;
-            const data = res.data;
-            if (typeof (data) == "string") msg = data;
-            else if (data.length) msg = data.join(",");
             this.$message({
                 type: res.code == 200 ? "success" : "warning",
-                message: res.message + " " + msg
+                dangerouslyUseHTMLString:true,
+                message: res.message.replace(/[\r\n]/g,"<br />")
             });
             this.$emit("success");
         }

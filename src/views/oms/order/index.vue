@@ -32,7 +32,9 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="订单状态：">
-            <el-select v-model="listQuery.status" class="input-width" placeholder="请选择" clearable>
+            <el-select v-model="listQuery.status" class="input-width" placeholder="请选择" clearable
+              @change="handleSearchList()">
+              <el-option label="全部" :value="null"></el-option>
               <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -80,7 +82,8 @@
       </div>
     </el-card>
     <div class="tabs">
-      <div class="li" v-for="(item, at) in statusOptions" :key="at" @click="handleSearchList(item.value)"
+      <div class="li" @click="handleSearchStatus(null)" :class="{ s: listQuery.status === null }">全部 </div>
+      <div class="li" v-for="(item, at) in statusOptions" :key="at" @click="handleSearchStatus(item.value)"
         :class="{ s: item.value == listQuery.status }">{{ item.label }}
       </div>
     </div>
@@ -102,79 +105,83 @@
     </div>
     <div class="table-container tableex">
       <div class="columns">
+        <el-checkbox @change="(ck) => handleCheckedAll(ck)" style="margin-left:10px;"></el-checkbox>
         <div class="c1">订单信息</div>
         <div class="c2">实付金额</div>
         <div class="c3">操作</div>
       </div>
-
-      <div class="item" v-for="(it, at) in list" :key="at">
-        <div class="title">
-          <div class="dt">
-            {{ it.createTime | formatCreateTime }}
-          </div>
-          <div class="orderno">
-            订单号: {{ it.orderSn }}({{ it.memberUsername }})
-          </div>
-          <div class="name">
-            会员编号({{ it.memberId }})
-          </div>
-          <div class="tags">
-            <div class="tag2">支付时间：{{ it.paymentTime | formatCreateTime }}</div>
-            <div class="tag2">{{ it.status | formatStatus }}</div>
-            <div class="tag1" v-if="it.deliverySn">快递单号：{{ it.deliverySn }}</div>
-          </div>
-        </div>
-        <div class="info">
-          <div class="goods">
-            <div class="li" v-for="(itp, atp) in it.itemList" :key="atp">
-              <div class="img">
-                <img :src="itp.productPic" />
-              </div>
-              <div class="prms">
-                <div class="tt">{{ itp.productName }} {{ itp.realAmount }}元/件</div>
-                <div class="tp">
-                  <div v-for="(ita, ata) in (itp.productAttr && JSON.parse(itp.productAttr) || [])" :key="ata">
-                    {{ ita.key }}:{{ ita.value }}
-                  </div>
-                </div>
-              </div>
-              <div class="price">
-                <div class="money">小计: {{ itp.realAmount * itp.productQuantity }}元</div>
-                <div class="num">数量: X {{ itp.productQuantity }}</div>
-              </div>
+      <el-checkbox-group v-model="multipleSelection" @change="handleSelectionChange">
+        <div class="item" v-for="(it, at) in list" :key="at">
+          <div class="title">
+            <el-checkbox :label="it"><span></span></el-checkbox>
+            <div class="dt">
+              {{ it.createTime | formatCreateTime }}
+            </div>
+            <div class="orderno">
+              订单号: {{ it.orderSn }}({{ it.memberUsername }})
+            </div>
+            <div class="name">
+              会员编号({{ it.memberId }})
+            </div>
+            <div class="tags">
+              <div class="tag2">支付时间：{{ it.paymentTime | formatCreateTime }}</div>
+              <div class="tag2">{{ it.status | formatStatus }}</div>
+              <div class="tag1" v-if="it.deliverySn">快递单号：{{ it.deliverySn }}</div>
             </div>
           </div>
-          <div class="amount">
-            <div class="money">￥{{ it.totalAmount }}</div>
-            <div class="freight">(含运费￥{{ it.freightAmount }})</div>
-            <div class="paymethod">{{ it.payType | formatPayType }}</div>
+          <div class="info">
+            <div class="goods">
+              <div class="li" v-for="(itp, atp) in it.itemList" :key="atp">
+                <div class="img">
+                  <img :src="itp.productPic" />
+                </div>
+                <div class="prms">
+                  <div class="tt">{{ itp.productName }} {{ itp.realAmount }}元/件</div>
+                  <div class="tp">
+                    <div class="category">分类：{{ itp.categoryName }}</div>
+                    <div v-for="(ita, ata) in (itp.productAttr && JSON.parse(itp.productAttr) || [])" :key="ata">
+                      {{ ita.key }}:{{ ita.value }}
+                    </div>
+                  </div>
+                </div>
+                <div class="price">
+                  <div class="money">小计: {{ itp.realAmount * itp.productQuantity }}元</div>
+                  <div class="num">数量: X {{ itp.productQuantity }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="amount">
+              <div class="money">￥{{ it.totalAmount }}</div>
+              <div class="freight">(含运费￥{{ it.freightAmount }})</div>
+              <div class="paymethod">{{ it.payType | formatPayType }}</div>
+            </div>
+            <div class="operate">
+              <el-button size="mini" @click="handleViewOrder(at, it)">查看订单</el-button>
+              <el-button size="mini" @click="handleChangeMoneyList(it)" v-if="it.isSpecific">查看分红</el-button>
+              <el-button size="mini" @click="handleCloseOrder(at, it)" v-show="it.status === 0">关闭订单</el-button>
+              <el-button size="mini" @click="handleDeliveryOrder(at, it)" v-show="it.status === 1">订单发货</el-button>
+              <el-button size="mini" @click="handleViewLogistics(at, it)"
+                v-show="it.status === 2 || it.status === 3">订单跟踪</el-button>
+              <el-button size="mini" type="danger" @click="handleDeleteOrder(at, it)"
+                v-show="it.status === 4">删除订单</el-button>
+            </div>
           </div>
-          <div class="operate">
-            <el-button size="mini" @click="handleViewOrder(at, it)">查看订单</el-button>
-            <el-button size="mini" @click="handleChangeMoneyList(it)" v-if="it.isSpecific">查看分红</el-button>
-            <el-button size="mini" @click="handleCloseOrder(at, it)" v-show="it.status === 0">关闭订单</el-button>
-            <el-button size="mini" @click="handleDeliveryOrder(at, it)" v-show="it.status === 1">订单发货</el-button>
-            <el-button size="mini" @click="handleViewLogistics(at, it)"
-              v-show="it.status === 2 || it.status === 3">订单跟踪</el-button>
-            <el-button size="mini" type="danger" @click="handleDeleteOrder(at, it)"
-              v-show="it.status === 4">删除订单</el-button>
+          <div class="contact">
+            <div class="name">
+              收货人: {{ it.receiverName }}
+            </div>
+            <div class="tel">
+              电话: {{ it.receiverPhone }}
+            </div>
+            <div class="address">
+              地址: {{ it.receiverProvince }} {{ it.receiverCity }} {{ it.receiverRegion }} {{ it.receiverDetailAddress }}
+            </div>
+            <div class="type">
+              {{ it.delivery_company }}
+            </div>
           </div>
         </div>
-        <div class="contact">
-          <div class="name">
-            收货人: {{ it.receiverName }}
-          </div>
-          <div class="tel">
-            电话: {{ it.receiverPhone }}
-          </div>
-          <div class="address">
-            地址: {{ it.receiverProvince }} {{ it.receiverCity }} {{ it.receiverRegion }} {{ it.receiverDetailAddress }}
-          </div>
-          <div class="type">
-            {{ it.delivery_company }}
-          </div>
-        </div>
-      </div>
+      </el-checkbox-group>
     </div>
     <el-dialog title="关闭订单" :visible.sync="closeOrder.dialogVisible" width="30%">
       <span style="vertical-align: top">操作备注：</span>
@@ -383,20 +390,32 @@ export default {
   },
   methods: {
     handleResetSearch() {
+      this.classIds = [];
       this.listQuery = Object.assign({}, defaultListQuery);
+      this.handleSearchList();
     },
-    handleSearchList(status) {
+    handleSearchList() {
       const me = this, q = me.listQuery;
       q.pageNum = 1;
-      q.status = status;
       if (q.createTimex && q.createTimex.length) {
         q.createTimeStart = q.createTimex[0];
         q.createTimeEnd = q.createTimex[1];
       }
       me.getList();
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
+    handleSearchStatus(status) {
+      const me = this, q = me.listQuery;
+      q.status = status === undefined ? q.status || null : status;
+      this.handleSearchList()
+    },
+    handleCheckedAll(checked) {
+      this.multipleSelection.splice(0, this.multipleSelection.length);
+      if (checked) {
+        this.multipleSelection.push(...this.list);
+      }
+    },
+    handleSelectionChange(val, checked) {
+      // console.log(val);return;
     },
     handleViewOrder(index, row) {
       this.$router.push({ path: '/oms/orderDetail', query: { id: row.id } })
@@ -722,6 +741,10 @@ export default {
 
 .item .goods img {
   width: 100%;
+}
+
+.item .goods .category {
+  color: #409EFF;
 }
 
 .item .goods .prms {

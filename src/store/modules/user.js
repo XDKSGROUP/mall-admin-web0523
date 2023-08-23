@@ -49,7 +49,7 @@ const user = {
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('请先给帐号分配角色后，再登录')
           }
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', data.icon)
