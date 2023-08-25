@@ -389,6 +389,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/ums/strategySetting/index'),
         meta: { title: '会员策略列表', icon: 'ums-admin' }
       },
+      {
+        path: 'log',
+        name: 'log',
+        component: () => import('@/views/ums/log/index'),
+        meta: { title: '操作日志', icon: 'ums-admin' }
+      },
     ]
   },
   {

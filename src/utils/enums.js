@@ -197,3 +197,31 @@ export const enumBusinessType = [{
 }, {
   name: "提现", value: "1"
 }];
+
+export const enumOperationType = [{
+  name: "新增", value: "1"
+}, {
+  name: "删除", value: "2"
+}, {
+  name: "更新", value: "3"
+}, {
+  name: "导出", value: "4"
+}, {
+  name: "查询", value: "5"
+}, {
+  name: "登录", value: "6"
+}, {
+  name: "登出", value: "7"
+}, {
+  name: "审核", value: "8"
+}, {
+  name: "打款", value: "9"
+}, {
+  name: "充值", value: "10"
+}, {
+  name: "作废", value: "11"
+}, {
+  name: "导入", value: "12"
+}, {
+  name: "其他", value: "13"
+}];
