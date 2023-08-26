@@ -28,3 +28,36 @@ export function getApplyDetail(id) {
     method:'get'
   })
 }
+
+
+export function agree(params) {
+  return request({
+    url:'/returnApply/agree',
+    method:'post',
+    data: params
+  })
+}
+
+export function reject(params) {
+  return request({
+    url:'/returnApply/reject',
+    method:'post',
+    data: params
+  })
+}
+
+export function receive(params) {
+  return request({
+    url:'/returnApply/receive',
+    method:'post',
+    data: params
+  })
+}
+
+export function refund(params) {
+  return request({
+    url:'/returnApply/refund',
+    method:'post',
+    data: params
+  })
+}

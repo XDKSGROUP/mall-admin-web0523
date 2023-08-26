@@ -80,7 +80,9 @@
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">问题描述</el-col>
-          <el-col class="form-border font-small" :span="18">{{orderReturnApply.description}}</el-col>
+          <el-col class="form-border font-small" :span="18">
+            {{orderReturnApply.description}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6" style="height:100px;line-height:80px">凭证图片
@@ -99,44 +101,33 @@
           <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">确认退款金额
           </el-col>
           <el-col class="form-border font-small" style="height:52px" :span="18">
-            ￥
-            <el-input size="small" v-model="updateStatusParam.returnAmount"
-                      :disabled="orderReturnApply.status!==0"
-                      style="width:200px;margin-left: 10px"></el-input>
+            ￥{{orderReturnApply.returnAmount}}
           </el-col>
         </el-row>
         <div v-show="orderReturnApply.status!==3">
         <el-row>
-          <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">选择收货点
+          <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">收货点
           </el-col>
           <el-col class="form-border font-small" style="height:52px" :span="18">
-            <el-select size="small"
-                       style="width:200px"
-                       :disabled="orderReturnApply.status!==0"
-                       v-model="updateStatusParam.companyAddressId">
-              <el-option v-for="address in companyAddressList"
-                         :key="address.id"
-                         :value="address.id"
-                         :label="address.addressName">
-              </el-option>
-            </el-select>
+            {{(currentAddress == null || !currentAddress.addressName) ? "&nbsp;" : currentAddress.addressName}}
           </el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">收货人姓名</el-col>
-          <el-col class="form-border font-small" :span="18">{{currentAddress.name}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{(currentAddress == null || !currentAddress.name) ? "&nbsp;" : currentAddress.name}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">所在区域</el-col>
-          <el-col class="form-border font-small" :span="18">{{currentAddress | formatRegion}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{(currentAddress == null || !currentAddress.province) ? "&nbsp;" : currentAddress.province}}{{(currentAddress == null || !currentAddress.city) ? "&nbsp;" : currentAddress.city}}{{(currentAddress == null || !currentAddress.region) ? "&nbsp;" : currentAddress.region}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">详细地址</el-col>
-          <el-col class="form-border font-small" :span="18">{{currentAddress.detailAddress}}</el-col>
+          <el-col class="form-border font-small" :span="18">{{ (currentAddress == null || !currentAddress.detailAddress) ? "&nbsp;" : currentAddress.detailAddress}}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">联系电话</el-col>
-          <el-col class="form-border font-small" :span="18">{{currentAddress.phone}}</el-col>
+         
+          <el-col class="form-border font-small" :span="18">{{(currentAddress == null || !currentAddress.phone) ? "&nbsp;" : currentAddress.phone}}</el-col>
         </el-row>
         </div>
       </div>
@@ -146,15 +137,19 @@
           <el-col class="form-border font-small" :span="18">{{orderReturnApply.handleMan}}</el-col>
         </el-row>
         <el-row>
-          <el-col class="form-border form-left-bg font-small" :span="6">处理时间</el-col>
+          <el-col class="form-border form-left-bg font-small" :span="6">处理时间&nbsp;</el-col>
           <el-col class="form-border font-small" :span="18">{{orderReturnApply.handleTime | formatTime}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6">拒绝退货原因</el-col>
+          <el-col class="form-border font-small" :span="18">{{orderReturnApply.rejectReason }}</el-col>
         </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">处理备注</el-col>
           <el-col class="form-border font-small" :span="18">{{orderReturnApply.handleNote}}</el-col>
         </el-row>
       </div>
-      <div class="form-container-border" v-show="orderReturnApply.status===2">
+      <div class="form-container-border" v-show="orderReturnApply.statu>0 && (orderReturnApply.receiverId>0)">
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6">收货人员</el-col>
           <el-col class="form-border font-small" :span="18">{{orderReturnApply.receiveMan}}</el-col>
@@ -168,46 +163,99 @@
           <el-col class="form-border font-small" :span="18">{{orderReturnApply.receiveNote}}</el-col>
         </el-row>
       </div>
+      <div class="form-container-border" v-show="orderReturnApply.statu>0 && (orderReturnApply.receiverId>0) && (orderReturnApply.refunderId>0)">
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6">退款人员</el-col>
+          <el-col class="form-border font-small" :span="18">{{orderReturnApply.refunderMan}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6" >退款时间</el-col>
+          <el-col class="form-border font-small" :span="18">{{orderReturnApply.refundTime | formatTime}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6">退款备注</el-col>
+          <el-col class="form-border font-small" :span="18">{{orderReturnApply.refundNote}}</el-col>
+        </el-row>
+      </div>
+      <div class="form-container-border" v-show="orderReturnApply.status==4">
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6" >撤销时间</el-col>
+          <el-col class="form-border font-small" :span="18">{{orderReturnApply.revokeTime | formatTime}}</el-col>
+        </el-row>
+      </div>
       <div class="form-container-border" v-show="orderReturnApply.status===0">
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">拒绝退货原因</el-col>
+          <el-col class="form-border font-small" :span="18">
+            <el-input  size="small" v-model="applyParam.rejectReason" style="width:200px;margin-left: 10px"></el-input>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">处理备注</el-col>
           <el-col class="form-border font-small" :span="18">
-            <el-input  size="small" v-model="updateStatusParam.handleNote" style="width:200px;margin-left: 10px"></el-input>
+            <el-input  size="small" v-model="applyParam.handleNote" style="width:200px;margin-left: 10px"></el-input>
           </el-col>
         </el-row>
       </div>
-      <div class="form-container-border" v-show="orderReturnApply.status===1">
+      <div class="form-container-border" v-show="orderReturnApply.status===1&&orderReturnApply.deliverySn!=''">
         <el-row>
           <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">收货备注</el-col>
           <el-col class="form-border font-small" :span="18">
-            <el-input  size="small" v-model="updateStatusParam.receiveNote" style="width:200px;margin-left: 10px"></el-input>
+            <el-input  size="small" v-model="receiveParam.receiveNote" style="width:200px;margin-left: 10px"></el-input>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="form-container-border" v-show="orderReturnApply.status===1&&orderReturnApply.deliverySn!=''&&(orderReturnApply.receiverId>0)">
+        <el-row>
+          <el-col class="form-border form-left-bg font-small" :span="6" style="height:52px;line-height:32px">退款备注</el-col>
+          <el-col class="form-border font-small" :span="18">
+            <el-input  size="small" v-model="refundParam.refundNote" style="width:200px;margin-left: 10px"></el-input>
           </el-col>
         </el-row>
       </div>
       <div style="margin-top:15px;text-align: center" v-show="orderReturnApply.status===0">
-        <el-button type="primary" size="small" @click="handleUpdateStatus(1)">确认退货</el-button>
-        <el-button type="danger" size="small" @click="handleUpdateStatus(3)">拒绝退货</el-button>
+        <el-button type="primary" size="small" @click="handleAgree()">同意退货</el-button>
+        <el-button type="danger" size="small" @click="handleReject()">拒绝退货</el-button>
       </div>
-      <div style="margin-top:15px;text-align: center" v-show="orderReturnApply.status===1">
-        <el-button type="primary" size="small" @click="handleUpdateStatus(2)">确认收货</el-button>
+      <div style="margin-top:15px;text-align: center" v-show="orderReturnApply.status===1&&orderReturnApply.deliverySn!=''">
+        <el-button type="primary" size="small" @click="handleReceive()">确认收货</el-button>
+      </div>
+      <div style="margin-top:15px;text-align: center" v-show="orderReturnApply.status===1&&orderReturnApply.deliverySn!=''&&orderReturnApply.receiverId>0">
+        <el-button type="primary" size="small" @click="handleRefund()">确认退款</el-button>
       </div>
     </el-card>
   </div>
 </template>
 <script>
-  import {getApplyDetail,updateApplyStatus} from '@/api/returnApply';
-  import {fetchList} from '@/api/companyAddress';
-  import {formatDate} from '@/utils/date';
+  import { getApplyDetail,agree,reject,receive,refund } from '@/api/returnApply';
+  import { listInfo} from '@/api/companyAddress';
+  import { formatDate } from '@/utils/date';
 
-  const defaultUpdateStatusParam = {
-    companyAddressId: null,
-    handleMan: 'admin',
-    handleNote: null,
-    receiveMan: 'admin',
-    receiveNote: null,
-    returnAmount: 0,
-    status: 0
+  const defaultApplyParam = {
+    ids: [],
+    rejectReason: null,
+    handleNote: null
   };
+
+  const defaultReceiveParam = {
+    ids: [],
+    receiveNote: null
+  };
+
+  const defaultRefundParam = {
+    ids: [],
+    refundNote: null
+  };
+  
+  // const defaultUpdateStatusParam = {
+  //   companyAddressId: null,
+  //   handleMan: 'admin',
+  //   handleNote: null,
+  //   receiveMan: 'admin',
+  //   receiveNote: null,
+  //   returnAmount: 0,
+  //   status: 0
+  // };
   const defaultOrderReturnApply = {
     id: null,
     orderId: null,
@@ -245,7 +293,10 @@
         orderReturnApply: Object.assign({},defaultOrderReturnApply),
         productList: null,
         proofPics: null,
-        updateStatusParam: Object.assign({}, defaultUpdateStatusParam),
+        // updateStatusParam: Object.assign({}, defaultUpdateStatusParam),
+        applyParam: Object.assign({}, defaultApplyParam),
+        receiveParam: Object.assign({}, defaultReceiveParam),
+        refundParam: Object.assign({}, defaultRefundParam),
         companyAddressList: null
       }
     },
@@ -263,7 +314,7 @@
       },
       currentAddress() {
         console.log("currentAddress()");
-        let id = this.updateStatusParam.companyAddressId;
+        let id = this.orderReturnApply.companyAddressId;
         if(this.companyAddressList==null)return {};
         for (let i = 0; i < this.companyAddressList.length; i++) {
           let address = this.companyAddressList[i];
@@ -282,8 +333,10 @@
           return "退货中";
         } else if (status === 2) {
           return "已完成";
-        } else {
+        } else if (status === 3){
           return "已拒绝";
+        } else if (status === 4){
+          return "已撤销";
         }
       },
       formatTime(time) {
@@ -294,11 +347,17 @@
         return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       },
       formatRegion(address) {
-        let str = address.province;
-        if (address.city != null) {
-          str += "  " + address.city;
+        let str = '';
+        if (address!=null && address.province != null) {
+          str += (address.province == null) ? '' : address.province;
         }
-        str += "  " + address.region;
+        if (address!=null && address.city != null) {
+          str += "  " + (address.city == null) ? '' : address.city;
+        }
+        if (address!=null && address.region != null) {
+          str += "  " + (address.region == null) ? '' : address.region;
+        }
+       
         return str;
       }
     },
@@ -317,31 +376,82 @@
           }
           //退货中和完成
           if(this.orderReturnApply.status===1||this.orderReturnApply.status===2){
-            this.updateStatusParam.returnAmount=this.orderReturnApply.returnAmount;
-            this.updateStatusParam.companyAddressId=this.orderReturnApply.companyAddressId;
+            // this.updateStatusParam.returnAmount = this.orderReturnApply.returnAmount;
+            // this.updateStatusParam.companyAddressId=this.orderReturnApply.companyAddressId;
           }
+          this.applyParam.ids.push(this.orderReturnApply.id);
+          this.receiveParam.ids.push(this.orderReturnApply.id);
+          this.refundParam.ids.push(this.orderReturnApply.id);
+
           this.getCompanyAddressList();
         });
       },
       getCompanyAddressList() {
-        fetchList().then(response => {
+        listInfo().then(response => {
           console.log("getCompanyAddressList()")
           this.companyAddressList = response.data;
           for (let i = 0; i < this.companyAddressList.length; i++) {
             if (this.companyAddressList[i].receiveStatus === 1&&this.orderReturnApply.status===0) {
-              this.updateStatusParam.companyAddressId = this.companyAddressList[i].id;
+              // this.updateStatusParam.companyAddressId = this.companyAddressList[i].id;
             }
           }
         });
       },
-      handleUpdateStatus(status){
-        this.updateStatusParam.status=status;
+      handleAgree(){
         this.$confirm('是否要进行此操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          updateApplyStatus(this.id,this.updateStatusParam).then(response=>{
+          agree(this.applyParam).then(response=>{
+            this.$message({
+              type: 'success',
+              message: '操作成功!',
+              duration:1000
+            });
+            this.$router.back();
+          });
+        });
+      },
+      handleReject(){
+        this.$confirm('是否要进行此操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          reject(this.applyParam).then(response=>{
+            this.$message({
+              type: 'success',
+              message: '操作成功!',
+              duration:1000
+            });
+            this.$router.back();
+          });
+        });
+      },
+      handleReceive(){
+        this.$confirm('是否要进行此操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          receive(this.receiveParam).then(response=>{
+            this.$message({
+              type: 'success',
+              message: '操作成功!',
+              duration:1000
+            });
+            this.$router.back();
+          });
+        });
+      },
+      handleRefund(){
+        this.$confirm('是否要进行此操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          refund(this.refundParam).then(response=>{
             this.$message({
               type: 'success',
               message: '操作成功!',
