@@ -143,20 +143,32 @@
   };
   const defaultStatusOptions=[
     {
-      label: '待处理',
-      value: 0
-    },
-    {
-      label: '退货中',
+      label: '申请退款',
       value: 1
     },
     {
-      label: '已完成',
+      label: '同意退款',
       value: 2
     },
     {
-      label: '已拒绝',
+      label: '寄回商品',
       value: 3
+    },
+    {
+      label: '确认收货',
+      value: 4
+    },
+    {
+      label: '退款成功',
+      value: 5
+    },
+    {
+      label: '拒绝退款',
+      value: 6
+    },
+    {
+      label: '撤销退款',
+      value: 7
     }
   ];
   export default {
