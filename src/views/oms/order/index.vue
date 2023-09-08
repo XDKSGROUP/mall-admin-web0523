@@ -125,7 +125,9 @@
             </div>
             <div class="tags">
               <div class="tag2">支付时间：{{ it.paymentTime | formatCreateTime }}</div>
-              <div class="tag2">{{ it.status | formatStatus }}</div>
+              <div class="tag2" :style="{ color: it.status == 4 ? '#d00' : it.status == 3 ? '#0a0' : '' }">{{ it.status |
+                formatStatus }}
+              </div>
               <div class="tag1" v-if="it.deliverySn">快递单号：{{ it.deliverySn }}</div>
             </div>
           </div>
@@ -138,7 +140,10 @@
                 <div class="prms">
                   <div class="tt">{{ itp.productName }} {{ itp.realAmount }}元/件</div>
                   <div class="tp">
-                    <div class="category">分类：{{ itp.categoryName }}</div>
+                    <div class="category">
+                      分类：{{ itp.categoryName }}
+                      <span @click="gotoRefundDetail(itp.returnId)" class="refundlink" v-if="itp.returnId > 0 && it.status < 3">(退款详细)</span>
+                    </div>
                     <div v-for="(ita, ata) in (itp.productAttr && JSON.parse(itp.productAttr) || [])" :key="ata">
                       {{ ita.key }}:{{ ita.value }}
                     </div>
@@ -591,6 +596,9 @@ export default {
       const me = this, ids = args[0];
       me.listQuery.firstCategoryId = ids[0];
       me.listQuery.secondCategoryId = [ids[1]];
+    },
+    async gotoRefundDetail(id){
+     this.$router.push("/oms/returnApplyDetail?id="+id);
     }
   }
 }
@@ -781,6 +789,13 @@ export default {
 
 .item .contact div {
   padding: 0 5px;
+}
+
+.refundlink{
+  margin-left:10px;
+  text-decoration: underline;
+  color:#d00;
+  cursor:pointer;
 }
 </style>
 

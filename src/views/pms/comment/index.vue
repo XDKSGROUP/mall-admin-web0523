@@ -18,13 +18,19 @@
       <div class="cont">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="产品名称">
-            <el-input size="mini" v-model="listQuery.productName" class="input-width" placeholder="请输入" clearable></el-input>
+            <el-input size="mini" v-model="listQuery.productName" class="input-width" placeholder="请输入"
+              clearable></el-input>
           </el-form-item>
           <el-form-item label="评价内容">
             <el-input size="mini" v-model="listQuery.content" class="input-width" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="评价星级">
-            <el-input size="mini" v-model="listQuery.stars" class="input-width" placeholder="请输入" clearable></el-input>
+            <el-select v-model="listQuery.stars" multiple filterable reserve-keyword placeholder="请选择">
+              <el-option
+                v-for="item in [{ value: 1, name: '1星' }, { value: 2, name: '2星' }, { value: 3, name: '3星' }, { value: 4, name: '4星' }, { value: 5, name: '5星' },]"
+                :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="评论类型">
             <el-select v-model="listQuery.type" clearable placeholder="请选择">
@@ -59,8 +65,8 @@
       </el-pagination>
     </div>
     <div class="table-container">
-      <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading" border
-        @selection-change="handleSelectionChange">
+      <el-table ref="infoTable" :data="list" style="width: 100%;" v-loading="listLoading"
+        @selection-change="handleSelectionChange" border>
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="商品图片" width="100" align="center">
           <template slot-scope="scope">
@@ -98,7 +104,7 @@
         <el-table-column label="评价星级" width="120" align="center">
           <template slot-scope="scope">{{ scope.row.star }}</template>
         </el-table-column>
-       <el-table-column label="评论内容" width="500" align="center">
+        <el-table-column label="评论内容" width="500" align="center">
           <template slot-scope="scope">{{ scope.row.content }}</template>
         </el-table-column>
         <el-table-column label="评价时间" width="160" align="center">
@@ -115,7 +121,8 @@
             <el-button v-if="scope.row.status === 0" size="mini" type="text" @click="setAuthSuccess(scope.row)">
               到帐
             </el-button>
-            <el-button v-if="scope.row.replayList&&scope.row.replayList.length===0" size="mini" type="text" @click="handleAuth(scope.$index, scope.row)">
+            <el-button v-if="scope.row.replayList && scope.row.replayList.length === 0" size="mini" type="text"
+              @click="handleAuth(scope.$index, scope.row)">
               回复
             </el-button>
             <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
@@ -172,7 +179,9 @@
           <el-col :span="4" class="table-cell">{{ info.createTime }}</el-col>
           <el-col :span="4" class="table-cell">{{ info.star }}</el-col>
           <el-col :span="8" class="table-cell">{{ info.content }}</el-col>
-          <el-col :span="8" class="table-cell"></el-col>
+          <el-col :span="8" class="table-cell">
+            <img class="img" v-for="(o,i) in (info.pics?info.pics.split(','):[])" :key="i" :src="o" />
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell-title">追评时间</el-col>
@@ -182,7 +191,9 @@
         <el-row>
           <el-col :span="4" class="table-cell">{{ info.addedTime }}</el-col>
           <el-col :span="4" class="table-cell">{{ info.addedContent }}</el-col>
-          <el-col :span="16" class="table-cell">{{ info.addedPics }}</el-col>
+          <el-col :span="16" class="table-cell">
+            <img class="img" v-for="(o,i) in (info.addedPics?info.addedPics.split(','):[])" :key="i" :src="o" />
+          </el-col>
           <!-- <el-col :span="12" class="table-cell"><img v-for="item in info.productPic.split(',')" style="width:80px;height:80px;margin-right: 5px;" :src="item" :key="item.id"></el-col> -->
         </el-row>
       </div>
@@ -190,11 +201,11 @@
         <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
         <span class="font-small">回复信息</span>
       </div>
-      <div class="table-layout" v-if="info.replayList&&info.replayList.length===0" >
+      <div class="table-layout" v-if="info.replayList && info.replayList.length === 0">
         <el-row>
           <el-col :span="24" class="table-cell">暂无回复</el-col>
         </el-row>
-        
+
       </div>
       <div class="table-layout" v-else v-for="(item, index) in info.replayList" :key="index">
         <el-row>
@@ -212,8 +223,8 @@
           <el-col :span="8" class="table-cell">{{ item.content }}</el-col>
         </el-row>
       </div>
-     
-      
+
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailVisible = false" size="small">确 定</el-button>
       </span>
@@ -597,7 +608,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const prms = Object.assign(info, { commentId: info.id,content:info.replayContent });
+        const prms = Object.assign(info, { commentId: info.id, content: info.replayContent });
         replay(prms).then(response => {
           me.$message({
             message: '回复完成',
@@ -720,6 +731,8 @@ export default {
   font-size: 14px;
   color: #303133;
 }
+
+.img{width:80px;height:80px;margin:0 3px;}
 </style>
 
 
