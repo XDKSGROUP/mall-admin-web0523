@@ -224,4 +224,16 @@ export const enumOperationType = [{
   name: "导入", value: "12"
 }, {
   name: "其他", value: "13"
+  }];
+
+export const enumCommentType = [{
+  name: "评价", value: "1"
+}, {
+name: "追评", value: "2"
+}];
+
+export const enumReplayType = [{
+  name: "会员", value: "1"
+}, {
+  name: "管理员", value: "2"
 }];
