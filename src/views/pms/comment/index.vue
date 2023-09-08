@@ -115,7 +115,7 @@
             <el-button v-if="scope.row.status === 0" size="mini" type="text" @click="setAuthSuccess(scope.row)">
               到帐
             </el-button>
-            <el-button size="mini" type="text" @click="handleAuth(scope.$index, scope.row)">
+            <el-button v-if="scope.row.replayList&&scope.row.replayList.length===0" size="mini" type="text" @click="handleAuth(scope.$index, scope.row)">
               回复
             </el-button>
             <el-button v-if="false" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
@@ -591,7 +591,6 @@ export default {
       })
     },
     setReplay(info) {
-      debugger
       const me = this;
       me.$confirm('确认要回复吗?', '提示', {
         confirmButtonText: '确定',
